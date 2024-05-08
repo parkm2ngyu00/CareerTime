@@ -68,6 +68,7 @@ function MyPage() {
 				</div>
 				<div className="w-3/4 h-full border-2 mt-4 rounded-lg flex flex-col p-2">
 					<MarkdownEditor></MarkdownEditor>
+					{/* <MarkdownEditor></MarkdownEditor> */}
 				</div>
 			</main>
 		</>

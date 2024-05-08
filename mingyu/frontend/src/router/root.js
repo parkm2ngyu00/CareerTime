@@ -1,8 +1,8 @@
 import { Suspense, lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import todoRouter from "./todoRouter";
 import Posting from "../pages/posts/Posting";
 import MyPage from "../pages/mypage/MyPage";
+import Board from "../pages/posts/Board";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage"));
@@ -33,6 +33,20 @@ const root = createBrowserRouter([
 				<MyPage />
 			</Suspense>
 		),
+	},
+	{
+		path: "/boards",
+		element: (
+			<Suspense fallback={Loading}>
+				<Board />
+			</Suspense>
+		),
+		children: [
+			{
+				path: ":boardId",
+				element: <Board />,
+			},
+		],
 	},
 ]);
 
