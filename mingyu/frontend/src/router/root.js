@@ -36,11 +36,6 @@ const root = createBrowserRouter([
 	},
 	{
 		path: "/boards",
-		element: (
-			<Suspense fallback={Loading}>
-				<Board />
-			</Suspense>
-		),
 		children: [
 			{
 				path: ":boardId",
