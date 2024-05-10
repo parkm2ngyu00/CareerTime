@@ -46,7 +46,7 @@ const Posting = () => {
 		};
 
 		console.log(postData);
-
+		// api 호출 코드
 		// try {
 		//   const response = await axios.post('/api/posts', postData);
 		//   console.log(response.data);
@@ -122,19 +122,7 @@ const Posting = () => {
 							value={value}
 							onChange={setValue}
 						/>
-						{/* <MDEditor.Markdown
-							source={value}
-							style={{ whiteSpace: "break-spaces" }}
-						/> */}
 					</div>
-					{/* <textarea
-						id="content"
-						value={content}
-						onChange={handleContentChange}
-						rows="10"
-						className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-						placeholder="본문 내용을 입력하세요"
-					></textarea> */}
 				</div>
 
 				<button

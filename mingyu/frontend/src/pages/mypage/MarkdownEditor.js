@@ -9,6 +9,8 @@ function MarkdownEditor() {
 	const [value, setValue] = useState(initMarkdown);
 
 	const handleEdit = () => {
+		// api 호출 코드 추가
+		console.log(value);
 		setIsEditing((isEditing) => !isEditing);
 	};
 
