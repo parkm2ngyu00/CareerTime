@@ -26,9 +26,17 @@ public class Board {
     @Column(name = "content")
     private String content;
 
+    @Column(name = "hashtags")
+    private String hashtags;
+
     @Column(name = "post_date") // 게시글의 작성일을 저장하는 칼럼
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime post_date;
+
+    @PrePersist
+    protected void onCreate() {
+        post_date = LocalDateTime.now();
+    }
 
     public void setPostId(Integer postId) {
         this.post_id = postId;
