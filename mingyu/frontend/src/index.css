@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ul {
+	list-style-type: initial; /* 기본 스타일 유지 */
+}
+
+ol {
+	list-style-type: decimal;
+}

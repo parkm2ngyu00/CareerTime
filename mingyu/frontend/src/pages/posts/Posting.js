@@ -58,7 +58,7 @@ const Posting = () => {
 	return (
 		<>
 			<Header isExpert={isExpert}></Header>
-			<div className="max-w-3xl mx-auto py-8">
+			<div className="w-3/5 mx-auto py-8">
 				<div className="mb-6">
 					<label htmlFor="title" className="block text-gray-700 font-bold mb-2">
 						제목
@@ -117,10 +117,11 @@ const Posting = () => {
 					</label>
 					<div className="container">
 						<MDEditor
-							height={300}
-							preview="edit"
+							height="auto"
+							visibleDragbar={false}
+							preview="preview"
 							value={value}
-							onChange={setValue}
+							onChange={(value) => setValue(value)}
 						/>
 					</div>
 				</div>
