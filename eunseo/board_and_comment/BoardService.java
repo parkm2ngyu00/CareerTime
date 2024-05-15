@@ -1,8 +1,10 @@
 package kr.ac.dankook.ace.board;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,10 +13,23 @@ import org.springframework.stereotype.Service;
 public class BoardService {
     @Autowired
     private BoardRepository boardRepository; // 리포지토리 의존성 주입
+    @Autowired
+    private HashTagService hashTagService;
 
     // 게시글 생성
     public Board createBoard(Board board) {
-        return boardRepository.save(board); // 게시글 저장
+        // 게시글 내용에서 해시태그 추출
+        List<String> extractedHashtags = hashTagService.extractHashtags(board.getContent());
+        // 추출된 해시태그를 문자열로 변환하여 저장
+        board.setHashtags(String.join(",", extractedHashtags));
+        // 현재 시간 설정
+        board.setPost_date(LocalDateTime.now());
+        return boardRepository.save(board);
+    }
+
+    // 검색 기능
+    public List<Board> findBoardsByTitleAndHashtag(String title, String hashtag) {
+        return boardRepository.findByTitleContainingAndHashtagsContaining(title, hashtag);
     }
 
     // 모든 게시글 조회
