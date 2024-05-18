@@ -1,16 +1,14 @@
-package kr.ac.dankook.ace.board;
+package kr.ac.dankook.ace.careertime.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity // JPA 엔티티임을 선언
 @Table(name = "posts") // 이 엔티티가 저장될 DB 테이블을 지정
-@Getter @Setter // Lombok을 사용하여 Getter, Setter 자동 생성
+@Data
 @AllArgsConstructor @NoArgsConstructor // Lombok을 사용하여 생성자 자동 생성
 public class Board {
     @Id // 기본 키임을 선언
