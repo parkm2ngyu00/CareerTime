@@ -24,9 +24,6 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "user_id", nullable = false)
-    private String user_id;
-
     @Column(name = "comment_text", nullable = false)
     private String comment_text;
 

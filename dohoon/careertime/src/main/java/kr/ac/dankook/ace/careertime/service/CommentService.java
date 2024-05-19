@@ -32,7 +32,7 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
         comment.setComment_date(commentDetails.getComment_date()); // 필드명 변경에 따른 메서드 수정
         // 추가로 변경해야 할 필드가 있다면 여기에 로직 추가
-        comment.setUser_id(commentDetails.getUser_id()); // userId 업데이트
+        comment.setUser(commentDetails.getUser()); // userId 업데이트
         return commentRepository.save(comment);
     }
 

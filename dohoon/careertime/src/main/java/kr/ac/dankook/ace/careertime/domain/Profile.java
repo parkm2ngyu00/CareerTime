@@ -23,13 +23,13 @@ public class Profile {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "company_name", nullable = false)    // 회사 이름 또는 취준
+    @Column(name = "company_name")    // 회사 이름 또는 취준
     private String company_name;
 
-    @Column(name = "position", nullable = false)    // 현재 직종 또는 희망 직종
+    @Column(name = "position")    // 현재 직종 또는 희망 직종
     private String position;
 
-    @Column(name = "introduction", nullable = false)    // 마크 업 언어로 소개 문구 작성
+    @Column(name = "introduction")    // 마크 업 언어로 소개 문구 작성
     private String introduction;
 
 }
