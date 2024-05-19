@@ -8,16 +8,18 @@ import java.util.Map;
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.config.ResourceNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service // 서비스 계층임을 선언
+@RequiredArgsConstructor
 public class BoardService {
-    @Autowired
-    private BoardRepository boardRepository; // 리포지토리 의존성 주입
-    @Autowired
-    private HashTagService hashTagService;
+
+    private final BoardRepository boardRepository; // 리포지토리 의존성 주입
+
+    private final HashTagService hashTagService;
 
     // 게시글 생성
     public Board createBoard(Board board) {
@@ -41,14 +43,14 @@ public class BoardService {
     }
 
     // ID로 게시글 조회
-    public ResponseEntity<Board> getBoardById(Integer id) {
+    public ResponseEntity<Board> getBoardById(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
         return ResponseEntity.ok(board);
     }
 
     // 게시글 업데이트
-    public ResponseEntity<Board> updateBoard(Integer id, Board boardDetails) {
+    public ResponseEntity<Board> updateBoard(Long id, Board boardDetails) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
         board.setTitle(boardDetails.getTitle());
@@ -58,7 +60,7 @@ public class BoardService {
     }
 
     // 게시글 삭제
-    public ResponseEntity<Map<String, Boolean>> deleteBoard(Integer id) {
+    public ResponseEntity<Map<String, Boolean>> deleteBoard(Long id) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
         boardRepository.delete(board);

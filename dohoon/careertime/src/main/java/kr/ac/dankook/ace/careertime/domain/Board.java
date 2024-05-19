@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
 public class Board {
     @Id // 기본 키임을 선언
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 기본 키 생성 전략을 지정 (DB가 자동으로 생성)
-    private Integer post_id;
+    private Long post_id;
 
-    @Column(name = "user_id") // DB의 칼럼 이름을 명시
-    private String user_id;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "title")
     private String title;
@@ -36,10 +37,4 @@ public class Board {
         post_date = LocalDateTime.now();
     }
 
-    public void setPostId(Integer postId) {
-        this.post_id = postId;
-    }
-    public Integer getPostId() {
-        return this.post_id;
-    }
 }

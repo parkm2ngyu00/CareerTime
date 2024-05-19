@@ -16,9 +16,9 @@ public class UserService {
 
     public Long save(AddUserRequest dto){
         return userRepository.save(User.builder()
-                .email(dto.getEmail())
+                .username(dto.getUsername())
                 // 패스워드 암호화
                 .password(bCryptPasswordEncoder.encode(dto.getPassword()))
-                .build()).getId();
+                .build()).getUser_id();
     }
 }

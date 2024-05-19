@@ -1,8 +1,10 @@
 package kr.ac.dankook.ace.careertime.domain;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,18 +23,34 @@ import lombok.NoArgsConstructor;
 public class User implements UserDetails {  // UserDetails를 상속받아 인증 객체로 사용
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false)
-    private Long id;
+    @Column(name = "user_id", updatable = false)
+    private Long user_id;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
+    @Column(name = "username", nullable = false, unique = true)
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "email", nullable = false)
+    private String email;
+
+    @Column(name = "user_type", nullable = false)
+    private String user_type;
+
+    @Column(name = "points", nullable = false)
+    private Long points;
+
+    @Column(name = "join_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime join_date;
+
     @Builder
-    public User(String email, String password, String auth) {
-        this.email = email;
+    public User(String username, String password, String auth) {
+        this.username = username;
         this.password = password;
     }
 
@@ -44,7 +62,7 @@ public class User implements UserDetails {  // UserDetails를 상속받아 인�
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
