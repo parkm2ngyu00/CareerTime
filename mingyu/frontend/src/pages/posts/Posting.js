@@ -119,7 +119,7 @@ const Posting = () => {
 						<MDEditor
 							height="auto"
 							visibleDragbar={false}
-							preview="preview"
+							preview="edit"
 							value={value}
 							onChange={(value) => setValue(value)}
 						/>

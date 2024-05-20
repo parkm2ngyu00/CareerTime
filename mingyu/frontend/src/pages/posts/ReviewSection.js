@@ -1,3 +1,5 @@
+import ReviewForm from "./ReviewForm";
+
 const reviewInfo = {
 	reviewCount: 3,
 	averageRating: 4,
@@ -68,6 +70,7 @@ const ReviewSection = () => {
 				reviewCount={reviewInfo.reviewCount}
 				averageRating={reviewInfo.averageRating}
 			/>
+			<ReviewForm />
 			<div>
 				{reviewInfo.reviewList.map((review, index) => (
 					<Review

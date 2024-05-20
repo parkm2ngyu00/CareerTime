@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Posting from "../pages/posts/Posting";
 import MyPage from "../pages/mypage/MyPage";
 import Board from "../pages/posts/Board";
+import SigninPage from "../pages/User/SigninPage";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage"));
@@ -42,6 +43,22 @@ const root = createBrowserRouter([
 				element: <Board />,
 			},
 		],
+	},
+	{
+		path: "/signin",
+		element: (
+			<Suspense fallback={Loading}>
+				<SigninPage />
+			</Suspense>
+		),
+	},
+	{
+		path: "/signup",
+		element: (
+			<Suspense fallback={Loading}>
+				<SigninPage />
+			</Suspense>
+		),
 	},
 ]);
 
