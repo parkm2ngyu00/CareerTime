@@ -26,7 +26,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/signup", "/", "/login", "/api/users/register").permitAll()
                         .anyRequest().authenticated())
-                // 폼 로그인은 현재 사용하지 않음
 //				.formLogin(formLogin -> formLogin
 //						.loginPage("/login")
 //						.defaultSuccessUrl("/home"))

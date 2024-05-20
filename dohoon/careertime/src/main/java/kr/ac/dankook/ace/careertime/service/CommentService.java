@@ -30,9 +30,8 @@ public class CommentService {
     public Comment updateComment(Long id, Comment commentDetails) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
-        comment.setComment_date(commentDetails.getComment_date()); // 필드명 변경에 따른 메서드 수정
-        // 추가로 변경해야 할 필드가 있다면 여기에 로직 추가
-        comment.setUser(commentDetails.getUser()); // userId 업데이트
+        comment.setComment_text(commentDetails.getComment_text());
+        comment.setComment_date(commentDetails.getComment_date());
         return commentRepository.save(comment);
     }
 
