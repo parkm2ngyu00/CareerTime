@@ -60,11 +60,7 @@ class BoardServiceTest {
 
     @Test
     void findBoardsByTitleAndHashtag() {
-//        String title = "게시글";
-//        String hashtag = "#해시태그";
-//
-//        List<Board> boards = boardService.findBoardsByTitleAndHashtag(title, hashtag);
-//        assertThat(boards).isNotEmpty();
+
     }
 
     @Test

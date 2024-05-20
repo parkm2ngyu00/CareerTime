@@ -42,7 +42,7 @@ public class UserService {
             user.setName(name);
             user.setEmail(email);
             user.setUser_type(userType);
-            userRepository.save(user); // JPA의 영속성 컨텍스트 덕분에, save 호출 없이도 업데이트가 가능하나 여기서는 명시적으로 호출
+            userRepository.save(user);
         }
         return user;
     }
