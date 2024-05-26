@@ -29,6 +29,9 @@ public class Profile {
     @Column(name = "position")    // 현재 직종 또는 희망 직종
     private String position;
 
+    @Column(name = "hashtags")
+    private String hashtags;    // 흥미분야 해쉬태그
+
     @Column(name = "introduction")    // 마크 업 언어로 소개 문구 작성
     private String introduction;
 

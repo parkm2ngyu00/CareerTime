@@ -23,15 +23,15 @@ public class SecurityConfig {
         http	.csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/signup", "/", "/login", "/api/users/register").permitAll()
-                        .anyRequest().authenticated())
+//                .authorizeHttpRequests((authorize) -> authorize
+//                        .requestMatchers("/signup", "/", "/login", "/api/users/register").permitAll()
+//                        .anyRequest().authenticated())
 //				.formLogin(formLogin -> formLogin
 //						.loginPage("/login")
 //						.defaultSuccessUrl("/home"))
-                .logout((logout) -> logout
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true))
+//                .logout((logout) -> logout
+//                        .logoutSuccessUrl("/login")
+//                        .invalidateHttpSession(true))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );

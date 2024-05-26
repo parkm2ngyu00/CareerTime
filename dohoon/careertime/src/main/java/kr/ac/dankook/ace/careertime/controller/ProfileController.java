@@ -4,6 +4,8 @@ import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Comment;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
+import kr.ac.dankook.ace.careertime.dto.BoardRequest;
+import kr.ac.dankook.ace.careertime.dto.ProfileRequest;
 import kr.ac.dankook.ace.careertime.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,21 +21,34 @@ public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestBody Profile profile) {
-        Profile createdProfile = profileService.createProfile(profile);
+    public ResponseEntity<Profile> createProfile(@RequestParam Long userId,
+                                                 @RequestBody ProfileRequest profileRequest) {
+        Profile createdProfile = profileService.createProfile(
+                userId,
+                profileRequest.getCompanyName(),
+                profileRequest.getPosition(),
+                profileRequest.getHashtags(),
+                profileRequest.getIntroduction()
+        );
         return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
     }
 
-    // Get profiles by userId
+    // Get profile by userId
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Profile>> getProfilesByUserId(@PathVariable Long userId) {
-        List<Profile> profiles = profileService.findProfileByUserId(userId);
-        return new ResponseEntity<>(profiles, HttpStatus.OK);
+    public ResponseEntity<Profile> getProfileByUserId(@PathVariable Long userId) {
+        Profile profile = profileService.findProfileByUserId(userId);
+        return new ResponseEntity<>(profile, HttpStatus.OK);
     }
 
     // Update a profile
     @PutMapping("/{profileId}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId, @RequestBody Profile updatedProfile) {
+    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId, @RequestBody ProfileRequest profileRequest) {
+        Profile updatedProfile = new Profile();
+        updatedProfile.setCompany_name(profileRequest.getCompanyName());
+        updatedProfile.setPosition(profileRequest.getPosition());
+        updatedProfile.setIntroduction(profileRequest.getIntroduction());
+        updatedProfile.setHashtags(String.join(", ", profileRequest.getHashtags()));
+
         Profile profile = profileService.updateProfile(profileId, updatedProfile);
         return new ResponseEntity<>(profile, HttpStatus.OK);
     }

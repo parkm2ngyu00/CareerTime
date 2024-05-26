@@ -6,8 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
+import kr.ac.dankook.ace.careertime.domain.Profile;
+import kr.ac.dankook.ace.careertime.domain.User;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.config.ResourceNotFoundException;
+import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
+import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,55 +21,58 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class BoardService {
 
-    private final BoardRepository boardRepository; // 리포지토리 의존성 주입
+    private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
-    private final HashTagService hashTagService;
+    public Board createBoard(Long userId, String title, List<String> hashtags, String content) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
 
-    // 게시글 생성
-    public Board createBoard(Board board) {
-        // 게시글 내용에서 해시태그 추출
-        List<String> extractedHashtags = hashTagService.extractHashtags(board.getContent());
-        // 추출된 해시태그를 문자열로 변환하여 저장
-        board.setHashtags(String.join(",", extractedHashtags));
-        // 현재 시간 설정
+        String hashtagString = String.join(", ", hashtags);
+
+        Board board = new Board();
+        board.setUser(user);
+        board.setTitle(title);
+        board.setContent(content);
+        board.setHashtags(hashtagString);
         board.setPost_date(LocalDateTime.now());
+
         return boardRepository.save(board);
     }
 
-    // 검색 기능
-    public List<Board> findBoardsByTitleAndHashtag(String title, String hashtag) {
+    public List<Board> searchBoards(String title, String hashtag) {
         return boardRepository.findByTitleContainingAndHashtagsContaining(title, hashtag);
     }
 
-    // 모든 게시글 조회
-    public List<Board> findAllBoards() {
-        return boardRepository.findAll(); // 모든 게시글 조회
+    public List<Board> getAllBoards() {
+        return boardRepository.findAll();
     }
 
-    // ID로 게시글 조회
-    public ResponseEntity<Board> getBoardById(Long id) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
-        return ResponseEntity.ok(board);
+    public Board getBoardById(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
     }
 
-    // 게시글 업데이트
-    public ResponseEntity<Board> updateBoard(Long id, Board boardDetails) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
-        board.setTitle(boardDetails.getTitle());
-        board.setContent(boardDetails.getContent());
-        Board updatedBoard = boardRepository.save(board);
-        return ResponseEntity.ok(updatedBoard);
+    public Board updateBoard(Long boardId, String title, List<String> hashtags, String content) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+
+        String hashtagString = String.join(", ", hashtags);
+
+        board.setTitle(title);
+        board.setContent(content);
+        board.setHashtags(hashtagString);
+
+        return boardRepository.save(board);
     }
 
-    // 게시글 삭제
-    public ResponseEntity<Map<String, Boolean>> deleteBoard(Long id) {
-        Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Board not exist with id :" + id));
-        boardRepository.delete(board);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("deleted", Boolean.TRUE);
-        return ResponseEntity.ok(response);
+    public void deleteBoard(Long boardId) {
+        boardRepository.deleteById(boardId);
+    }
+
+    public Profile getProfileByUser(User user) {
+        return profileRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found for user: " + user.getUsername()));
     }
 }
