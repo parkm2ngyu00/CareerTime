@@ -4,6 +4,7 @@ import CompanyImg from "../../img/company.png";
 import Header from "../../layouts/Header";
 import { useEffect, useState } from "react";
 import MarkdownEditor from "./MarkdownEditor";
+import MyChat, { ChatListPage } from "./MyChat";
 
 const initUserData = {
 	userName: "Mingyu Park",
@@ -17,6 +18,7 @@ function MyPage() {
 	const [userData, setUserData] = useState(initUserData);
 	const [editMode, setEditMode] = useState(false);
 	const [hashtagInput, setHashtagInput] = useState("");
+	const [isChat, setIsChat] = useState(false);
 
 	const handleInputChange = (e) => {
 		e.preventDefault();
@@ -55,6 +57,11 @@ function MyPage() {
 			[name]: value,
 		}));
 		console.log(userData.userName);
+	};
+
+	const handleChat = (e) => {
+		e.preventDefault();
+		setIsChat((prev) => !prev);
 	};
 
 	const handleSave = () => {
@@ -133,7 +140,7 @@ function MyPage() {
 										onClick={handleSave}
 										className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full"
 									>
-										Save
+										저장
 									</button>
 								</div>
 							) : (
@@ -157,15 +164,34 @@ function MyPage() {
 										onClick={handleEdit}
 										className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
 									>
-										Edit profile
+										프로필 수정하기
 									</button>
+									{isChat ? (
+										<button
+											onClick={handleChat}
+											className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
+										>
+											상세 프로필 보기
+										</button>
+									) : (
+										<button
+											onClick={handleChat}
+											className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
+										>
+											내 채팅 보기
+										</button>
+									)}
 								</>
 							)}
 						</div>
 					</div>
 				</div>
 				<div className="w-3/4 h-full border-2 mt-4 rounded-lg flex flex-col p-2">
-					<MarkdownEditor></MarkdownEditor>
+					{isChat ? (
+						<ChatListPage></ChatListPage>
+					) : (
+						<MarkdownEditor></MarkdownEditor>
+					)}
 				</div>
 			</main>
 		</>

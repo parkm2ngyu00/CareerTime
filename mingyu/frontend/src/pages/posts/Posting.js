@@ -117,7 +117,7 @@ const Posting = () => {
 					</label>
 					<div className="container">
 						<MDEditor
-							height="auto"
+							height={300}
 							visibleDragbar={false}
 							preview="edit"
 							value={value}

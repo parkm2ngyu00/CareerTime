@@ -4,6 +4,7 @@ import Posting from "../pages/posts/Posting";
 import MyPage from "../pages/mypage/MyPage";
 import Board from "../pages/posts/Board";
 import SigninPage from "../pages/User/SigninPage";
+import { ChatDetailPage } from "../pages/mypage/MyChat";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage"));
@@ -59,6 +60,15 @@ const root = createBrowserRouter([
 				<SigninPage />
 			</Suspense>
 		),
+	},
+	{
+		path: "/chat",
+		children: [
+			{
+				path: ":chatId",
+				element: <ChatDetailPage />,
+			},
+		],
 	},
 ]);
 
