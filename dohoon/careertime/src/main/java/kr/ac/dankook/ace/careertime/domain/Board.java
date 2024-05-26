@@ -19,10 +19,10 @@ public class Board {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     private String content;
 
     @Column(name = "hashtags")

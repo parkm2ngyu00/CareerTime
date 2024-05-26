@@ -6,16 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
     public User registerUser(String username, String password, String name, String email, String userType) {
@@ -28,30 +26,11 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User findUserById(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        return user.orElse(null);
-    }
-
-    @Transactional
-    public User updateUser(Long id, String username, String password, String name, String email, String userType) {
-        User user = findUserById(id);
-        if (user != null) {
-            user.setUsername(username);
-            user.setPassword(passwordEncoder.encode(password));
-            user.setName(name);
-            user.setEmail(email);
-            user.setUser_type(userType);
-            userRepository.save(user);
+    public Optional<User> loginUser(String username, String password) {
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
+            return user;
         }
-        return user;
-    }
-
-    public boolean deleteUser(Long id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
-            return true;
-        }
-        return false;
+        return Optional.empty();
     }
 }

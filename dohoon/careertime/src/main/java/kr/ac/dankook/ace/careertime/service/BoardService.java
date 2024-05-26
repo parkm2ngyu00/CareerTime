@@ -1,20 +1,15 @@
 package kr.ac.dankook.ace.careertime.service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
-import kr.ac.dankook.ace.careertime.config.ResourceNotFoundException;
 import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service // 서비스 계층임을 선언
@@ -41,8 +36,8 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public List<Board> searchBoards(String query) {
-        return boardRepository.findByTitleContainingOrContentContainingOrHashtagsContaining(query, query, query);
+    public List<Board> searchBoards(String title, String hashtag) {
+        return boardRepository.findByTitleContainingAndHashtagsContaining(title, hashtag);
     }
 
     public List<Board> getAllBoards() {

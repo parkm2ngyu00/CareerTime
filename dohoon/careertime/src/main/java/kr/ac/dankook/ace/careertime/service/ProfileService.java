@@ -1,27 +1,16 @@
 package kr.ac.dankook.ace.careertime.service;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import kr.ac.dankook.ace.careertime.config.ResourceNotFoundException;
-import kr.ac.dankook.ace.careertime.domain.Board;
-import kr.ac.dankook.ace.careertime.domain.Comment;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
-import kr.ac.dankook.ace.careertime.repository.CommentRepository;
 import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -83,4 +72,3 @@ public class ProfileService {
         profileRepository.deleteById(profileId);
     }
 }
-

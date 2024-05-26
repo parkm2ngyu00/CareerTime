@@ -1,40 +1,35 @@
 package kr.ac.dankook.ace.careertime.domain;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 
-@Entity
 @Table(name = "users")
 @NoArgsConstructor
 @Data
-public class User implements UserDetails {
+@Entity
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", updatable = false)
     private Long user_id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true) // 유저 아이디
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false)    // 유저 비밀번호
     private String password;
 
-    @Column(name = "name")
+    @Column(name = "name")  // 회원 가입시 받을 정보
     private String name;
 
-    @Column(name = "email")
+    @Column(name = "email")     // 회원 가입시 받을 정보
     private String email;
 
-    @Column(name = "user_type", nullable = false)
+    @Column(name = "user_type", nullable = false)   // 회원 가입시 받을 정보
     private String user_type;
 
     @Column(name = "points")
@@ -43,29 +38,5 @@ public class User implements UserDetails {
     @Column(name = "join_date", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime join_date = LocalDateTime.now();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    
 }

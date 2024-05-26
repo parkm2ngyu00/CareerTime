@@ -40,8 +40,9 @@ public class BoardController {
 
     @GetMapping("/boards/search")
     public ResponseEntity<List<Board>> searchBoards(
-            @RequestParam String target) {
-        List<Board> boards = boardService.searchBoards(target);
+            @RequestParam String title,
+            @RequestParam String hashtag) {
+        List<Board> boards = boardService.searchBoards(title, hashtag);
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
