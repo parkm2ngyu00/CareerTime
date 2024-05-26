@@ -1,8 +1,13 @@
 package kr.ac.dankook.ace.careertime.service;
 
 import kr.ac.dankook.ace.careertime.domain.Comment;
+import kr.ac.dankook.ace.careertime.domain.User;
+import kr.ac.dankook.ace.careertime.dto.CommentResponse;
+import kr.ac.dankook.ace.careertime.dto.CommentSummaryResponse;
+import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.repository.CommentRepository;
 import kr.ac.dankook.ace.careertime.config.ResourceNotFoundException;
+import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +20,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
+    private final BoardRepository boardRepository;
 
     public Comment createComment(Comment comment) {
         return commentRepository.save(comment);
@@ -40,5 +47,18 @@ public class CommentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
         commentRepository.delete(comment);
         return ResponseEntity.ok().build();
+    }
+
+    public CommentSummaryResponse getCommentSummaryByBoardId(Long boardId) {
+        List<Comment> comments = findCommentsByBoardId(boardId);
+        int reviewCount = comments.size();
+        double averageRating = comments.stream().mapToDouble(Comment::getComment_rate).average().orElse(0.0);
+        List<CommentResponse> reviewList = comments.stream()
+                .map(comment -> {
+                    User user = comment.getUser();
+                    return new CommentResponse(user.getName(), comment.getComment_rate().intValue(), comment.getComment_text());
+                })
+                .collect(Collectors.toList());
+        return new CommentSummaryResponse(reviewCount, averageRating, reviewList);
     }
 }

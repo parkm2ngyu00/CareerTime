@@ -41,8 +41,8 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public List<Board> searchBoards(String title, String hashtag) {
-        return boardRepository.findByTitleContainingAndHashtagsContaining(title, hashtag);
+    public List<Board> searchBoards(String query) {
+        return boardRepository.findByTitleContainingOrContentContainingOrHashtagsContaining(query, query, query);
     }
 
     public List<Board> getAllBoards() {

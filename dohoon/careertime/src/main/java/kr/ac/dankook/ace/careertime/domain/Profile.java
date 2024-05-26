@@ -35,4 +35,8 @@ public class Profile {
     @Column(name = "introduction")    // 마크 업 언어로 소개 문구 작성
     private String introduction;
 
+    @Column(name = "profile_picture")    // Base64 인코딩된 프로필 사진
+    @Lob
+    private String profilePicture;
+
 }
