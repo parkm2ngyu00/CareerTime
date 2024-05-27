@@ -25,15 +25,14 @@ public class ProfileController {
 
     @PostMapping
     public ResponseEntity<Profile> createProfile(@RequestParam Long userId,
-                                                 @RequestBody ProfileRequest profileRequest,
-                                                 @RequestParam("profilePicture") MultipartFile profilePicture) {
+                                                 @RequestBody ProfileRequest profileRequest) {
         Profile createdProfile = profileService.createProfile(
                 userId,
                 profileRequest.getCompanyName(),
                 profileRequest.getPosition(),
                 profileRequest.getHashtags(),
                 profileRequest.getIntroduction(),
-                profilePicture
+                profileRequest.getProfilePicture() // Base64 encoded string
         );
         return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
     }
@@ -58,15 +57,14 @@ public class ProfileController {
     // Update a profile
     @PutMapping("/{profileId}")
     public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId,
-                                                 @RequestBody ProfileRequest profileRequest,
-                                                 @RequestParam(value = "profilePicture", required = false) MultipartFile profilePicture) {
+                                                 @RequestBody ProfileRequest profileRequest) {
         Profile profileDetails = new Profile();
         profileDetails.setCompany_name(profileRequest.getCompanyName());
         profileDetails.setPosition(profileRequest.getPosition());
         profileDetails.setIntroduction(profileRequest.getIntroduction());
         profileDetails.setHashtags(String.join(", ", profileRequest.getHashtags()));
 
-        Profile updatedProfile = profileService.updateProfile(profileId, profileDetails, profilePicture);
+        Profile updatedProfile = profileService.updateProfile(profileId, profileDetails, profileRequest.getProfilePicture());
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 

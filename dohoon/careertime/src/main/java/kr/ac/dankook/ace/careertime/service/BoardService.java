@@ -1,11 +1,15 @@
 package kr.ac.dankook.ace.careertime.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
+import kr.ac.dankook.ace.careertime.dto.BoardResponse;
+import kr.ac.dankook.ace.careertime.dto.UserInfo;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
@@ -36,17 +40,35 @@ public class BoardService {
         return boardRepository.save(board);
     }
 
-    public List<Board> searchBoards(String title, String hashtag) {
-        return boardRepository.findByTitleContainingAndHashtagsContaining(title, hashtag);
+    public List<Board> searchBoards(String query) {
+        return boardRepository.findByTitleContainingOrContentContainingOrHashtagsContaining(query, query, query);
     }
 
     public List<Board> getAllBoards() {
         return boardRepository.findAll();
     }
 
-    public Board getBoardById(Long boardId) {
-        return boardRepository.findById(boardId)
+    public BoardResponse getBoardById(Long boardId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+
+        User user = board.getUser();
+        Profile profile = getProfileByUser(user);
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUsername(user.getUsername());
+        userInfo.setUsercompany(profile.getCompany_name());
+        userInfo.setUseremail(user.getEmail());
+        userInfo.setUserinterest(Arrays.asList(profile.getHashtags().split(", ")));
+
+        BoardResponse boardResponse = new BoardResponse();
+        boardResponse.setTitle(board.getTitle());
+        boardResponse.setHashtags(Arrays.asList(board.getHashtags().split(", ")));
+        boardResponse.setContent(board.getContent());
+        boardResponse.setPostdate(board.getPost_date().format(DateTimeFormatter.ISO_LOCAL_DATE));
+        boardResponse.setUserinfo(userInfo);
+
+        return boardResponse;
     }
 
     public Board updateBoard(Long boardId, String title, List<String> hashtags, String content) {

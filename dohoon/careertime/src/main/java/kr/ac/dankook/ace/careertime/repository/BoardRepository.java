@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository // 리포지토리 계층을 선언, 스프링이 자동으로 구현체를 생성
 public interface BoardRepository extends JpaRepository<Board, Long> { // JPA 리포지토리 상속
-    List<Board> findByTitleContainingAndHashtagsContaining(String title, String hashtag);
+    List<Board> findByTitleContainingOrContentContainingOrHashtagsContaining(String title, String content, String hashtag);
 }

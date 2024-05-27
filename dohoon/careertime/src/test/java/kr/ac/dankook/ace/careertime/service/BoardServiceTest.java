@@ -3,6 +3,8 @@ package kr.ac.dankook.ace.careertime.service;
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
+import kr.ac.dankook.ace.careertime.dto.BoardResponse;
+import kr.ac.dankook.ace.careertime.dto.UserInfo;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
@@ -45,6 +47,14 @@ class BoardServiceTest {
         testUser.setEmail("testuser@example.com");
         testUser.setUser_type("USER");
         userRepository.save(testUser);
+
+        Profile profile = new Profile();
+        profile.setUser(testUser);
+        profile.setCompany_name("Test Company");
+        profile.setPosition("Developer");
+        profile.setHashtags("#java, #spring");
+        profile.setIntroduction("Hello, I'm a developer.");
+        profileRepository.save(profile);
     }
 
     @Test
@@ -79,7 +89,7 @@ class BoardServiceTest {
         boardService.createBoard(testUser.getUser_id(), title, hashtags, content);
 
         // When
-        List<Board> boards = boardService.searchBoards("Search", "#search");
+        List<Board> boards = boardService.searchBoards("Search");
 
         // Then
         assertFalse(boards.isEmpty());
@@ -116,11 +126,26 @@ class BoardServiceTest {
         Board createdBoard = boardService.createBoard(testUser.getUser_id(), title, hashtags, content);
 
         // When
-        Board foundBoard = boardService.getBoardById(createdBoard.getPost_id());
+        BoardResponse foundBoard = boardService.getBoardById(createdBoard.getPost_id());
 
         // Then
         assertNotNull(foundBoard);
-        assertEquals(createdBoard.getPost_id(), foundBoard.getPost_id());
+        assertEquals(title, foundBoard.getTitle());
+        assertEquals(content, foundBoard.getContent());
+        assertEquals(hashtags, foundBoard.getHashtags());
+
+        // Check user information
+        UserInfo userInfo = foundBoard.getUserinfo();
+        assertNotNull(userInfo);
+        assertEquals(testUser.getUsername(), userInfo.getUsername());
+        assertEquals(testUser.getEmail(), userInfo.getUseremail());
+
+        // Check profile information
+        Optional<Profile> profileOpt = profileRepository.findByUser(testUser);
+        profileOpt.ifPresent(profile -> {
+            assertEquals(profile.getCompany_name(), userInfo.getUsercompany());
+            assertEquals(Arrays.asList(profile.getHashtags().split(", ")), userInfo.getUserinterest());
+        });
     }
 
     @Test

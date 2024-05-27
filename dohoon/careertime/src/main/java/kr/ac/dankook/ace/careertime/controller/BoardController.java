@@ -39,10 +39,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/search")
-    public ResponseEntity<List<Board>> searchBoards(
-            @RequestParam String title,
-            @RequestParam String hashtag) {
-        List<Board> boards = boardService.searchBoards(title, hashtag);
+    public ResponseEntity<List<Board>> searchBoards(@RequestParam String target) {
+        List<Board> boards = boardService.searchBoards(target);
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
@@ -54,24 +52,7 @@ public class BoardController {
 
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<BoardResponse> getBoardById(@PathVariable Long boardId) {
-        Board board = boardService.getBoardById(boardId);
-        User user = board.getUser();
-        Profile profile = boardService.getProfileByUser(user);
-
-        BoardResponse boardResponse = new BoardResponse();
-        boardResponse.setTitle(board.getTitle());
-        boardResponse.setHashtags(Arrays.asList(board.getHashtags().split(", ")));
-        boardResponse.setContent(board.getContent());
-        boardResponse.setPostdate(board.getPost_date().toString());
-
-        UserInfo userInfo = new UserInfo();
-        userInfo.setUsername(user.getUsername());
-        userInfo.setUsercompany(profile.getCompany_name());
-        userInfo.setUseremail(user.getEmail());
-        userInfo.setUserinterest(Arrays.asList(profile.getHashtags().split(", ")));
-
-        boardResponse.setUserinfo(userInfo);
-
+        BoardResponse boardResponse = boardService.getBoardById(boardId);
         return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 
@@ -96,4 +77,3 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
-

@@ -12,6 +12,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,10 +51,10 @@ class ProfileServiceTest {
         String position = "Developer";
         List<String> hashtags = Arrays.asList("#java", "#spring");
         String introduction = "Hello, I'm a developer.";
-        MockMultipartFile profilePicture = new MockMultipartFile("profilePicture", "test.png", "image/png", "test image content".getBytes());
+        String base64Image = Base64.getEncoder().encodeToString("test image content".getBytes());
 
         // When
-        Profile createdProfile = profileService.createProfile(testUser.getUser_id(), companyName, position, hashtags, introduction, profilePicture);
+        Profile createdProfile = profileService.createProfile(testUser.getUser_id(), companyName, position, hashtags, introduction, base64Image);
 
         // Then
         assertNotNull(createdProfile);
@@ -108,10 +109,10 @@ class ProfileServiceTest {
         profileDetails.setPosition("Senior Developer");
         profileDetails.setHashtags("#updated, #java, #spring");
         profileDetails.setIntroduction("Hello, I'm a senior developer.");
-        MockMultipartFile updatedProfilePicture = new MockMultipartFile("profilePicture", "updated.png", "image/png", "updated image content".getBytes());
+        String updatedBase64Image = Base64.getEncoder().encodeToString("updated image content".getBytes());
 
         // When
-        Profile updatedProfile = profileService.updateProfile(profileId, profileDetails, updatedProfilePicture);
+        Profile updatedProfile = profileService.updateProfile(profileId, profileDetails, updatedBase64Image);
 
         // Then
         assertNotNull(updatedProfile);

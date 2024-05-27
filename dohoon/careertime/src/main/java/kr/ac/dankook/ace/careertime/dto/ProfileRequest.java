@@ -11,4 +11,5 @@ public class ProfileRequest {
     private String position;
     private List<String> hashtags;
     private String introduction;
+    private String profilePicture;
 }
