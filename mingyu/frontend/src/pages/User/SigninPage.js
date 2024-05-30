@@ -1,12 +1,34 @@
+import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SigninPage = () => {
+	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState(null);
+	const [formData, setFormData] = useState({
+		username: "",
+		password: "",
+	});
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		// 로그인 로직 처리
+		try {
+			const response = await axios.post(
+				"http://localhost:8080/api/users/login",
+				formData
+			);
+			sessionStorage.setItem("userId", response.data.user_id);
+			navigate("/");
+		} catch (err) {
+			setError("로그인에 실패하였습니다.");
+		}
+	};
+
+	const handleChange = (e) => {
+		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
 	return (
@@ -21,15 +43,15 @@ const SigninPage = () => {
 							className="block text-gray-700 font-bold mb-2"
 							htmlFor="email"
 						>
-							이메일
+							아이디
 						</label>
 						<input
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-							id="email"
-							type="email"
+							id="username"
+							name="username"
 							placeholder="이메일을 입력하세요"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
+							value={formData.username}
+							onChange={handleChange}
 						/>
 					</div>
 					<div className="mb-6">
@@ -43,9 +65,10 @@ const SigninPage = () => {
 							className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
 							id="password"
 							type="password"
+							name="password"
 							placeholder="비밀번호를 입력하세요"
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
+							value={formData.password}
+							onChange={handleChange}
 						/>
 					</div>
 					<div className="flex items-center justify-between">

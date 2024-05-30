@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import Header from "../../layouts/Header";
 import { useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
+import axios from "axios";
 
 const Posting = () => {
 	const isExpert = useLocation().state.isExpert;
@@ -10,8 +11,8 @@ const Posting = () => {
 	const [hashtags, setHashtags] = useState([]);
 
 	const [title, setTitle] = useState("");
-	const [content, setContent] = useState("");
-	const [value, setValue] = useState(``);
+	const [content, setContent] = useState(``);
+	// const [value, setValue] = useState(``);
 
 	const handleTitleChange = (e) => {
 		setTitle(e.target.value);
@@ -41,18 +42,27 @@ const Posting = () => {
 
 		const postData = {
 			title,
-			value,
+			content,
 			hashtags,
 		};
 
 		console.log(postData);
 		// api 호출 코드
-		// try {
-		//   const response = await axios.post('/api/posts', postData);
-		//   console.log(response.data);
-		// } catch (error) {
-		//   console.error('Error:', error);
-		// }
+		try {
+			const queryParams = {
+				userId: "1",
+			};
+			const response = await axios.post(
+				"http://localhost:8080/api/boards",
+				postData,
+				{
+					params: queryParams,
+				}
+			);
+			console.log(response.data);
+		} catch (error) {
+			console.error("Error:", error);
+		}
 	};
 
 	return (
@@ -120,8 +130,8 @@ const Posting = () => {
 							height={300}
 							visibleDragbar={false}
 							preview="edit"
-							value={value}
-							onChange={(value) => setValue(value)}
+							value={content}
+							onChange={(content) => setContent(content)}
 						/>
 					</div>
 				</div>

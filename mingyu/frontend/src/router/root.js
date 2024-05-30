@@ -5,6 +5,8 @@ import MyPage from "../pages/mypage/MyPage";
 import Board from "../pages/posts/Board";
 import SigninPage from "../pages/User/SigninPage";
 import { ChatDetailPage } from "../pages/mypage/MyChat";
+import PostList from "../pages/posts/PostList";
+import SignupPage from "../pages/User/SignupPage";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage"));
@@ -38,6 +40,14 @@ const root = createBrowserRouter([
 	},
 	{
 		path: "/boards",
+		element: (
+			<Suspense fallback={Loading}>
+				<PostList />
+			</Suspense>
+		),
+	},
+	{
+		path: "/boards",
 		children: [
 			{
 				path: ":boardId",
@@ -54,10 +64,18 @@ const root = createBrowserRouter([
 		),
 	},
 	{
-		path: "/signup",
+		path: "/signin",
 		element: (
 			<Suspense fallback={Loading}>
 				<SigninPage />
+			</Suspense>
+		),
+	},
+	{
+		path: "/signup",
+		element: (
+			<Suspense fallback={Loading}>
+				<SignupPage />
 			</Suspense>
 		),
 	},
