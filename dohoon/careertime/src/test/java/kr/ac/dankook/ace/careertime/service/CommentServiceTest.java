@@ -2,10 +2,12 @@ package kr.ac.dankook.ace.careertime.service;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Comment;
+import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
 import kr.ac.dankook.ace.careertime.dto.CommentSummaryResponse;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
 import kr.ac.dankook.ace.careertime.repository.CommentRepository;
+import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ class CommentServiceTest {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
     private User testUser;
     private Board testBoard;
 
@@ -48,6 +53,14 @@ class CommentServiceTest {
         testUser.setEmail("testuser@example.com");
         testUser.setUser_type("USER");
         userRepository.save(testUser);
+
+        Profile profile = new Profile();
+        profile.setUser(testUser);
+        profile.setCompany_name("Test Company");
+        profile.setPosition("Developer");
+        profile.setHashtags("#java, #spring");
+        profile.setIntroduction("Hello, I'm a developer.");
+        profileRepository.save(profile);
 
         testBoard = new Board();
         testBoard.setUser(testUser);
@@ -62,14 +75,13 @@ class CommentServiceTest {
     void createComment() {
         // Given
         Comment comment = new Comment();
-        comment.setBoard(testBoard);
         comment.setUser(testUser);
         comment.setComment_rate(5L);
         comment.setComment_text("Great post!");
         comment.setComment_date(LocalDateTime.now());
 
         // When
-        Comment createdComment = commentService.createComment(comment);
+        Comment createdComment = commentService.createComment(testBoard.getPost_id(), comment);
 
         // Then
         assertNotNull(createdComment);
@@ -126,6 +138,7 @@ class CommentServiceTest {
         Comment updatedCommentDetails = new Comment();
         updatedCommentDetails.setComment_text("Updated comment");
         updatedCommentDetails.setComment_date(LocalDateTime.now());
+        updatedCommentDetails.setComment_rate(4L);
 
         // When
         Comment updatedComment = commentService.updateComment(commentId, updatedCommentDetails);
@@ -133,6 +146,7 @@ class CommentServiceTest {
         // Then
         assertNotNull(updatedComment);
         assertEquals("Updated comment", updatedComment.getComment_text());
+        assertEquals(4L, updatedComment.getComment_rate());
     }
 
     @Test
@@ -149,10 +163,9 @@ class CommentServiceTest {
         Long commentId = comment.getComment_id();
 
         // When
-        ResponseEntity<Void> response = commentService.deleteComment(commentId);
+        commentService.deleteComment(commentId);
 
         // Then
-        assertEquals(200, response.getStatusCodeValue());
         Optional<Comment> foundComment = commentRepository.findById(commentId);
         assertFalse(foundComment.isPresent());
     }
