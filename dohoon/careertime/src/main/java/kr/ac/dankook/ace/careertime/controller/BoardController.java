@@ -25,7 +25,7 @@ public class BoardController {
 
     @PostMapping("/boards")
     public ResponseEntity<Board> createBoard(
-            @RequestParam Long userId,
+            @RequestParam("userId") Long userId,
             @RequestBody BoardRequest boardRequest) {
 
         Board createdBoard = boardService.createBoard(
@@ -39,8 +39,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/search")
-    public ResponseEntity<List<Board>> searchBoards(@RequestParam String target) {
-        List<Board> boards = boardService.searchBoards(target);
+    public ResponseEntity<List<BoardResponse>> searchBoards(@RequestParam("target") String target) {
+        List<BoardResponse> boards = boardService.searchBoards(target);
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
@@ -51,14 +51,14 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardResponse> getBoardById(@PathVariable Long boardId) {
+    public ResponseEntity<BoardResponse> getBoardById(@PathVariable("boardId") Long boardId) {
         BoardResponse boardResponse = boardService.getBoardById(boardId);
         return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}")
     public ResponseEntity<Board> updateBoard(
-            @PathVariable Long boardId,
+            @PathVariable("boardId") Long boardId,
             @RequestBody BoardRequest boardRequest) {
 
         Board updatedBoard = boardService.updateBoard(
@@ -72,7 +72,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/boards/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable("boardId") Long boardId) {
         boardService.deleteBoard(boardId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

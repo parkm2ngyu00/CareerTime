@@ -20,7 +20,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/boards/{boardId}/comments")
-    public Comment createComment(@PathVariable Long boardId, @RequestBody Comment comment) {
+    public Comment createComment(@PathVariable("boardId") Long boardId, @RequestBody Comment comment) {
         Board board = new Board(); // 예시로 생성, 실제로는 ID에 해당하는 Board 조회 필요
         board.setPost_id(boardId);
         // comment.setBoard(board); // 실제로는 Comment와 Board를 연관지어야 함
@@ -28,22 +28,22 @@ public class CommentController {
     }
 
     @GetMapping("/boards/{boardId}/comments")
-    public List<Comment> getCommentsByBoardId(@PathVariable Long boardId) {
+    public List<Comment> getCommentsByBoardId(@PathVariable("boardId") Long boardId) {
         return commentService.findCommentsByBoardId(boardId);
     }
 
     @PutMapping("/comments/{id}")
-    public Comment updateComment(@PathVariable Long id, @RequestBody Comment commentDetails) {
+    public Comment updateComment(@PathVariable("id") Long id, @RequestBody Comment commentDetails) {
         return commentService.updateComment(id, commentDetails);
     }
 
     @DeleteMapping("/comments/{id}")
-    public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteComment(@PathVariable("id") Long id) {
         return commentService.deleteComment(id);
     }
 
     @GetMapping("/comments")
-    public ResponseEntity<CommentSummaryResponse> getCommentSummaryByBoardId(@RequestParam Long boardId) {
+    public ResponseEntity<CommentSummaryResponse> getCommentSummaryByBoardId(@RequestParam("boardId") Long boardId) {
         CommentSummaryResponse summary = commentService.getCommentSummaryByBoardId(boardId);
         return new ResponseEntity<>(summary, HttpStatus.OK);
     }
