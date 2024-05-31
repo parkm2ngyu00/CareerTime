@@ -1,5 +1,6 @@
 package kr.ac.dankook.ace.careertime.service;
 
+import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Comment;
 import kr.ac.dankook.ace.careertime.domain.User;
 import kr.ac.dankook.ace.careertime.dto.CommentResponse;
@@ -22,7 +23,13 @@ public class CommentService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public Comment createComment(Comment comment) {
+    public Comment createComment(Long boardId, Comment comment) {
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+        comment.setBoard(board);
+        User user = userRepository.findById(comment.getUser().getUser_id())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + comment.getUser().getUser_id()));
+        comment.setUser(user);
         return commentRepository.save(comment);
     }
 
@@ -35,17 +42,17 @@ public class CommentService {
 
     public Comment updateComment(Long id, Comment commentDetails) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + id));
         comment.setComment_text(commentDetails.getComment_text());
         comment.setComment_date(commentDetails.getComment_date());
+        comment.setComment_rate(commentDetails.getComment_rate());
         return commentRepository.save(comment);
     }
 
-    public ResponseEntity<Void> deleteComment(Long id) {
+    public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Comment not found with id: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + id));
         commentRepository.delete(comment);
-        return ResponseEntity.ok().build();
     }
 
     public CommentSummaryResponse getCommentSummaryByBoardId(Long boardId) {

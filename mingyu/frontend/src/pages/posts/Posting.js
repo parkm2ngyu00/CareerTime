@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Header from "../../layouts/Header";
 import { useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
@@ -6,7 +6,8 @@ import axios from "axios";
 
 const Posting = () => {
 	const isExpert = useLocation().state.isExpert;
-
+	const userId = sessionStorage.getItem("userId");
+	const navigate = useNavigate();
 	const [hashtagInput, setHashtagInput] = useState("");
 	const [hashtags, setHashtags] = useState([]);
 
@@ -50,7 +51,7 @@ const Posting = () => {
 		// api 호출 코드
 		try {
 			const queryParams = {
-				userId: "1",
+				userId: userId,
 			};
 			const response = await axios.post(
 				"http://localhost:8080/api/boards",
@@ -60,6 +61,7 @@ const Posting = () => {
 				}
 			);
 			console.log(response.data);
+			navigate(`/boards/${response.data.post_id}`);
 		} catch (error) {
 			console.error("Error:", error);
 		}

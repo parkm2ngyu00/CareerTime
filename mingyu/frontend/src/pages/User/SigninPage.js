@@ -2,6 +2,14 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// const initPostData = {
+// 	companyName: "Example Company",
+// 	position: "Developer",
+// 	hashtags: ["#example1", "#example2"],
+// 	introduction: "Hello, I'm a developer.",
+// 	profilePicture: "base64_encoded_image_string",
+// };
+
 const SigninPage = () => {
 	const navigate = useNavigate();
 	const [email, setEmail] = useState("");
@@ -21,6 +29,12 @@ const SigninPage = () => {
 				formData
 			);
 			sessionStorage.setItem("userId", response.data.user_id);
+			sessionStorage.setItem("userName", response.data.name);
+			sessionStorage.setItem("userEmail", response.data.email);
+			// const response2 = await axios.post(
+			// 	`http://localhost:8080/api/profiles?userId=${response.data.user_id}`,
+			// 	initPostData
+			// );
 			navigate("/");
 		} catch (err) {
 			setError("로그인에 실패하였습니다.");

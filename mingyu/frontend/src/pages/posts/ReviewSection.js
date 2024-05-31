@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import ReviewForm from "./ReviewForm";
+import { useParams } from "react-router-dom";
 
 const reviewInfo = {
 	reviewCount: 3,
@@ -10,7 +12,7 @@ const reviewInfo = {
 	],
 };
 
-const Review = ({ name, rating, comment }) => {
+const Review = ({ name, rating, comment, date }) => {
 	const ratingStars = Array.from({ length: 5 }, (_, i) => (
 		<span
 			key={i}
@@ -21,10 +23,11 @@ const Review = ({ name, rating, comment }) => {
 	));
 
 	return (
-		<div className="bg-white shadow-md rounded-lg p-4 mb-4">
+		<div className="bg-white shadow-md rounded-lg p-4 mb-4 relative">
 			<div className="flex items-center mb-2">
 				<div className="font-bold mr-2">{name}</div>
 				<div className="flex">{ratingStars}</div>
+				<div className="text-gray-400 absolute right-3 top-7">{date}</div>
 			</div>
 			<p className="text-gray-700">{comment}</p>
 		</div>
@@ -64,24 +67,61 @@ const ReviewStats = ({ reviewCount, averageRating }) => {
 };
 
 const ReviewSection = () => {
+	const { boardId } = useParams();
+	const [comments, setComments] = useState(null);
+	const [commentCount, setCommentCount] = useState(0);
+	const [average, setAverage] = useState(0);
+
+	useEffect(() => {
+		const fetchCommentData = async () => {
+			try {
+				const response = await fetch(
+					`http://localhost:8080/api/boards/${boardId}/comments`
+				);
+				const data = await response.json();
+				console.log(data);
+				setComments(data);
+				setCommentCount(data.length);
+				if (data.length == 0) {
+					setAverage(0);
+				} else {
+					const totalRating = data.reduce(
+						(sum, comment) => sum + comment.comment_rate,
+						0
+					);
+					const averageRating = totalRating / data.length;
+					setAverage(averageRating);
+				}
+			} catch (error) {
+				console.error("Error fetching profile data:", error);
+			}
+		};
+
+		fetchCommentData();
+	}, [boardId]);
+
 	return (
-		<div className="container mx-auto py-4">
-			<ReviewStats
-				reviewCount={reviewInfo.reviewCount}
-				averageRating={reviewInfo.averageRating}
-			/>
-			<ReviewForm />
-			<div>
-				{reviewInfo.reviewList.map((review, index) => (
-					<Review
-						key={index}
-						name={review.name}
-						rating={review.rating}
-						comment={review.comment}
-					/>
-				))}
-			</div>
-		</div>
+		<>
+			{comments ? (
+				<div className="container mx-auto py-4">
+					<ReviewStats reviewCount={commentCount} averageRating={average} />
+					<ReviewForm />
+					<div>
+						{comments.map((review, index) => (
+							<Review
+								key={index}
+								name={review.user.name}
+								rating={review.comment_rate}
+								comment={review.comment_text}
+								date={review.comment_date}
+							/>
+						))}
+					</div>
+				</div>
+			) : (
+				<></>
+			)}
+		</>
 	);
 };
 

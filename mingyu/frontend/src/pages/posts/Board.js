@@ -10,7 +10,7 @@ import ReviewSection from "./ReviewSection";
 
 // boardId에 따라 데이터를 fetching하는 함수 (예시)
 const fetchBoardData = async (boardId) => {
-	const response = await fetch(`/api/boards/${boardId}`);
+	const response = await fetch(`http://localhost:8080/api/boards/${boardId}`);
 	const data = await response.json();
 	return data;
 };
@@ -109,11 +109,13 @@ const Board = () => {
 	const clickContent = () => setViewComment(false);
 	const clickCommnet = () => setViewComment(true);
 
-	// useEffect(() => {
-	// 	fetchBoardData(boardId)
-	// 		.then((data) => setBoardData(data))
-	// 		.catch((error) => console.error(error));
-	// }, [boardId]);
+	useEffect(() => {
+		console.log(boardId);
+		fetchBoardData(boardId)
+			.then((data) => setBoardData(data))
+			.then(console.log(boardData))
+			.catch((error) => console.error(error));
+	}, [boardId]);
 
 	if (!boardData) {
 		return <div>Loading...</div>;
@@ -126,8 +128,11 @@ const Board = () => {
 				<div className="w-2/3 h-auto mr-10">
 					<h1 className="font-extrabold text-3xl my-7">{boardData.title}</h1>
 					<div className="flex mb-5">
-						{boardData.hashtags.map((hashtag) => (
-							<p className="rounded-full px-3 py-1 mr-2 bg-blue-400 text-white">
+						{boardData.hashtags.map((hashtag, index) => (
+							<p
+								key={index}
+								className="rounded-full px-3 py-1 mr-2 bg-blue-400 text-white"
+							>
 								{hashtag}
 							</p>
 						))}
@@ -172,7 +177,7 @@ const Board = () => {
 							<ReviewSection></ReviewSection>
 						</>
 					) : (
-						<MDEditor.Markdown source={content} />
+						<MDEditor.Markdown source={boardData.content} />
 					)}
 				</div>
 				<div className="w-1/3">
@@ -185,15 +190,24 @@ const Board = () => {
 							/>
 							<div className="w-2/3 mt-5">
 								<div>
-									<h2 className="text-2xl font-bold">{userData.userName}</h2>
+									<h2 className="text-2xl font-bold">
+										{boardData.userinfo.username}
+									</h2>
 									<div className="flex items-center mt-3">
 										<img src={CompanyImg} className="w-6 h-6" />
-										<p className="text-gray-600">{userData.userCompany}</p>
+										<p className="text-gray-600">
+											{boardData.userinfo.usercompany}
+										</p>
 									</div>
-									<p className="text-gray-600">{userData.userEmail}</p>
+									<p className="text-gray-600">
+										{boardData.userinfo.useremail}
+									</p>
 									<div className="flex my-2">
-										{userData.userInterest.map((item) => (
-											<div className="bg-blue-400 text-white mr-2 p-1 rounded-md">
+										{boardData.userinfo.userinterest.map((item, index) => (
+											<div
+												key={index}
+												className="bg-blue-400 text-white mr-2 p-1 rounded-md"
+											>
 												{item}
 											</div>
 										))}
@@ -202,7 +216,7 @@ const Board = () => {
 										프로필 보러가기
 									</button>
 									<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full">
-										구매하기
+										채팅하기
 									</button>
 								</div>
 							</div>

@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000") // CORS 허용(일반적으로 프론트엔드 개발 서버)에서 API 서버에 접근할 수 있도록 허용
+//@CrossOrigin(origins = "http://localhost:3000") // CORS 허용(일반적으로 프론트엔드 개발 서버)에서 API 서버에 접근할 수 있도록 허용
 //지정된 출처 외의 다른 출처에서는 API에 접근할 수 없도록 함
 @RestController // RESTful 컨트롤러임을 선언
 @RequestMapping("/api") // 모든 요청 URL의 기본 경로
@@ -25,7 +25,7 @@ public class BoardController {
 
     @PostMapping("/boards")
     public ResponseEntity<Board> createBoard(
-            @RequestParam Long userId,
+            @RequestParam("userId") Long userId,
             @RequestBody BoardRequest boardRequest) {
 
         Board createdBoard = boardService.createBoard(
@@ -39,8 +39,8 @@ public class BoardController {
     }
 
     @GetMapping("/boards/search")
-    public ResponseEntity<List<Board>> searchBoards(@RequestParam String target) {
-        List<Board> boards = boardService.searchBoards(target);
+    public ResponseEntity<List<BoardResponse>> searchBoards(@RequestParam("target") String target) {
+        List<BoardResponse> boards = boardService.searchBoards(target);
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
@@ -51,14 +51,14 @@ public class BoardController {
     }
 
     @GetMapping("/boards/{boardId}")
-    public ResponseEntity<BoardResponse> getBoardById(@PathVariable Long boardId) {
+    public ResponseEntity<BoardResponse> getBoardById(@PathVariable("boardId") Long boardId) {
         BoardResponse boardResponse = boardService.getBoardById(boardId);
         return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}")
     public ResponseEntity<Board> updateBoard(
-            @PathVariable Long boardId,
+            @PathVariable("boardId") Long boardId,
             @RequestBody BoardRequest boardRequest) {
 
         Board updatedBoard = boardService.updateBoard(
@@ -72,7 +72,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/boards/{boardId}")
-    public ResponseEntity<Void> deleteBoard(@PathVariable Long boardId) {
+    public ResponseEntity<Void> deleteBoard(@PathVariable("boardId") Long boardId) {
         boardService.deleteBoard(boardId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

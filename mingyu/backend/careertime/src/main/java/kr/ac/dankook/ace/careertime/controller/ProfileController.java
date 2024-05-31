@@ -20,12 +20,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/profiles")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class ProfileController {
     private final ProfileService profileService;
 
     @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestParam Long userId,
+    public ResponseEntity<Profile> createProfile(@RequestParam("userId") Long userId,
                                                  @RequestBody ProfileRequest profileRequest) {
         Profile createdProfile = profileService.createProfile(
                 userId,
@@ -40,7 +40,7 @@ public class ProfileController {
 
     // Get profile by userId
     @GetMapping
-    public ResponseEntity<ProfileResponse> getProfileByUserId(@RequestParam Long userId) {
+    public ResponseEntity<ProfileResponse> getProfileByUserId(@RequestParam("userId") Long userId) {
         Profile profile = profileService.findProfileByUserId(userId);
         User user = profile.getUser();
 
@@ -57,7 +57,7 @@ public class ProfileController {
 
     // Update a profile
     @PutMapping("/{profileId}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable Long profileId,
+    public ResponseEntity<Profile> updateProfile(@PathVariable("profileId") Long profileId,
                                                  @RequestBody ProfileRequest profileRequest) {
         Profile profileDetails = new Profile();
         profileDetails.setCompany_name(profileRequest.getCompanyName());
@@ -71,7 +71,7 @@ public class ProfileController {
 
     // Delete a profile
     @DeleteMapping("/{profileId}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable Long profileId) {
+    public ResponseEntity<Void> deleteProfile(@PathVariable("profileId") Long profileId) {
         profileService.deleteProfile(profileId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

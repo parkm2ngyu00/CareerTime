@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+const initPostData = {
+	companyName: "Example Company",
+	position: "Developer",
+	hashtags: ["#example1", "#example2"],
+	introduction: "Hello, I'm a developer.",
+	profilePicture: "base64_encoded_image_string",
+};
+
 const SignupPage = () => {
 	const navigate = useNavigate();
 	const [formData, setFormData] = useState({
@@ -30,6 +38,10 @@ const SignupPage = () => {
 			);
 			// sessionStorage.setItem("userId", response.data.user_id);
 			// 회원가입 성공 후 추가 작업 수행 (예: 로그인 페이지로 이동)
+			const response2 = await axios.post(
+				`http://localhost:8080/api/profiles?userId=${response.data.user_id}`,
+				initPostData
+			);
 			navigate("/signin");
 		} catch (err) {
 			setError("회원가입 중 오류가 발생했습니다.");
