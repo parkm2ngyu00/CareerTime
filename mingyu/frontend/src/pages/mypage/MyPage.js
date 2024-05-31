@@ -29,6 +29,7 @@ function MyPage() {
 	const [hashtagInput, setHashtagInput] = useState("");
 	const [isChat, setIsChat] = useState(false);
 	const userId = sessionStorage.getItem("userId");
+	const [profileId, setProfileId] = useState(null);
 
 	useEffect(() => {
 		const fetchProfileData = async () => {
@@ -39,6 +40,7 @@ function MyPage() {
 				const data = await response.json();
 				console.log(data);
 				setUserData(data);
+				setProfileId(data.profileId);
 			} catch (error) {
 				console.error("Error fetching profile data:", error);
 			}
@@ -91,9 +93,20 @@ function MyPage() {
 		setIsChat((prev) => !prev);
 	};
 
-	const handleSave = () => {
+	const handleSave = async (e) => {
+		e.preventDefault();
 		// 변경 정보 저장 로직 추가 (api 호출 등)
 		console.log(userData);
+		console.log(profileId);
+		try {
+			const response = await axios.put(
+				`http://localhost:8080/api/profiles/${profileId}`,
+				userData
+			);
+			console.log(response.data);
+		} catch (error) {
+			console.error("Error:", error);
+		}
 		setEditMode(false);
 	};
 

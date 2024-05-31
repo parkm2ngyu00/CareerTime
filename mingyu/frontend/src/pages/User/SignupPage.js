@@ -3,9 +3,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const initPostData = {
-	companyName: "Example Company",
+	companyName: "회사명을 입력해주세요",
 	position: "Developer",
-	hashtags: ["#example1", "#example2"],
+	hashtags: ["#해시태그", "#입력"],
 	introduction: "Hello, I'm a developer.",
 	profilePicture: "base64_encoded_image_string",
 };

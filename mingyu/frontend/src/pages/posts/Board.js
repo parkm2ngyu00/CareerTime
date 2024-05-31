@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
 import Sticky from "react-sticky-box";
 
@@ -7,13 +7,7 @@ import ProfileImg from "../../img/profile.jpg";
 import Header from "../../layouts/Header";
 import CompanyImg from "../../img/company.png";
 import ReviewSection from "./ReviewSection";
-
-// boardId에 따라 데이터를 fetching하는 함수 (예시)
-const fetchBoardData = async (boardId) => {
-	const response = await fetch(`http://localhost:8080/api/boards/${boardId}`);
-	const data = await response.json();
-	return data;
-};
+import axios from "axios";
 
 const boardInitData = {
 	title: "[토스뱅크 현직자] 자바 백엔드 개발 진로상담 도와드립니다",
@@ -101,19 +95,30 @@ const userData = {
 
 const Board = () => {
 	const { boardId } = useParams();
-	const [boardData, setBoardData] = useState(boardInitData);
+	const [boardData, setBoardData] = useState();
 	const [viewCommnet, setViewComment] = useState(false);
+	const [isAdmin, setIsAdmin] = useState(false);
 
 	const defaultBtn = useRef(null);
+	const navigate = useNavigate();
 
 	const clickContent = () => setViewComment(false);
 	const clickCommnet = () => setViewComment(true);
 
+	// boardId에 따라 데이터를 fetching하는 함수 (예시)
+	const fetchBoardData = async (boardId) => {
+		const response = await fetch(`http://localhost:8080/api/boards/${boardId}`);
+		const data = await response.json();
+		console.log(data);
+		if (data.userinfo.useremail == sessionStorage.getItem("userEmail")) {
+			setIsAdmin(true);
+		}
+		return data;
+	};
+
 	useEffect(() => {
-		console.log(boardId);
 		fetchBoardData(boardId)
 			.then((data) => setBoardData(data))
-			.then(console.log(boardData))
 			.catch((error) => console.error(error));
 	}, [boardId]);
 
@@ -121,12 +126,52 @@ const Board = () => {
 		return <div>Loading...</div>;
 	}
 
+	// api 가 이상함. 수정 필요
+	const handleDelete = async (e) => {
+		e.preventDefault();
+		const response = await axios.delete(
+			`http://localhost:8080/api/boards${boardId}`
+		);
+		navigate("/boards");
+	};
+
+	const handleModify = async (e) => {
+		e.preventDefault();
+		const state = {
+			title: boardData.title,
+			hashtags: boardData.hashtags,
+			content: boardData.content,
+			boardId: boardId,
+		};
+		console.log(state);
+		navigate("/post/modify", { state });
+	};
+
 	return (
 		<>
 			<Header></Header>
 			<div className="flex px-20 pb-20">
-				<div className="w-2/3 h-auto mr-10">
+				<div className="w-2/3 h-auto mr-10 relative">
 					<h1 className="font-extrabold text-3xl my-7">{boardData.title}</h1>
+					{isAdmin ? (
+						<>
+							<button
+								onClick={handleModify}
+								className="absolute right-16 rounded-lg px-3 py-1 bg-blue-500 hover:bg-blue-700 text-white"
+							>
+								수정
+							</button>
+							<button
+								onClick={handleDelete}
+								className="absolute right-0 rounded-lg px-3 py-1 bg-blue-500 hover:bg-blue-700 text-white"
+							>
+								삭제
+							</button>
+						</>
+					) : (
+						<></>
+					)}
+
 					<div className="flex mb-5">
 						{boardData.hashtags.map((hashtag, index) => (
 							<p

@@ -16,11 +16,12 @@ const example = {
 const ReviewForm = () => {
 	const [rating, setRating] = useState(0);
 	const [review, setReview] = useState("");
-	const boardId = useParams();
+	const { boardId } = useParams();
 	const userId = sessionStorage.getItem("userId");
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		console.log(boardId);
 		const user = {
 			user_id: parseInt(userId),
 		};

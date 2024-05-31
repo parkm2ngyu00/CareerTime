@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import ReviewForm from "./ReviewForm";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import StarRating from "./StarRating";
 
 const reviewInfo = {
 	reviewCount: 3,
@@ -67,36 +69,87 @@ const ReviewStats = ({ reviewCount, averageRating }) => {
 };
 
 const ReviewSection = () => {
+	const [rating, setRating] = useState(0);
+	const [review, setReview] = useState("");
 	const { boardId } = useParams();
+	const userId = sessionStorage.getItem("userId");
+
+	function getCurrentFormattedDate() {
+		const now = new Date();
+
+		const year = now.getFullYear();
+		const month = String(now.getMonth() + 1).padStart(2, "0");
+		const date = String(now.getDate()).padStart(2, "0");
+		const hours = String(now.getHours()).padStart(2, "0");
+		const minutes = String(now.getMinutes()).padStart(2, "0");
+		const seconds = String(now.getSeconds()).padStart(2, "0");
+
+		return `${year}-${month}-${date}T${hours}:${minutes}:${seconds}`;
+	}
+
+	const fetchCommentData = async () => {
+		try {
+			const response = await fetch(
+				`http://localhost:8080/api/boards/${boardId}/comments`
+			);
+			const data = await response.json();
+			console.log(data);
+			setComments(data);
+			setCommentCount(data.length);
+			if (data.length == 0) {
+				setAverage(0);
+			} else {
+				const totalRating = data.reduce(
+					(sum, comment) => sum + comment.comment_rate,
+					0
+				);
+				const averageRating = totalRating / data.length;
+				const average = Number(averageRating.toFixed(1));
+				setAverage(average);
+			}
+		} catch (error) {
+			console.error("Error fetching profile data:", error);
+		}
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		console.log(boardId);
+		const user = {
+			user_id: parseInt(userId),
+		};
+		const postData = {
+			user,
+			comment_rate: rating,
+			comment_text: review,
+			comment_date: getCurrentFormattedDate(),
+		};
+		console.log(postData);
+		console.log(JSON.stringify(postData));
+		try {
+			const response = await axios.post(
+				`http://localhost:8080/api/boards/${boardId}/comments`,
+				postData,
+				{
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
+			setReview("");
+			setRating(0);
+			fetchCommentData();
+			console.log(response.data);
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	};
+
 	const [comments, setComments] = useState(null);
 	const [commentCount, setCommentCount] = useState(0);
 	const [average, setAverage] = useState(0);
 
 	useEffect(() => {
-		const fetchCommentData = async () => {
-			try {
-				const response = await fetch(
-					`http://localhost:8080/api/boards/${boardId}/comments`
-				);
-				const data = await response.json();
-				console.log(data);
-				setComments(data);
-				setCommentCount(data.length);
-				if (data.length == 0) {
-					setAverage(0);
-				} else {
-					const totalRating = data.reduce(
-						(sum, comment) => sum + comment.comment_rate,
-						0
-					);
-					const averageRating = totalRating / data.length;
-					setAverage(averageRating);
-				}
-			} catch (error) {
-				console.error("Error fetching profile data:", error);
-			}
-		};
-
 		fetchCommentData();
 	}, [boardId]);
 
@@ -105,7 +158,24 @@ const ReviewSection = () => {
 			{comments ? (
 				<div className="container mx-auto py-4">
 					<ReviewStats reviewCount={commentCount} averageRating={average} />
-					<ReviewForm />
+					<div className="mx-auto my-5 p-4 border rounded shadow-lg">
+						<h1 className="text-xl font-semibold mb-4">후기 남기기</h1>
+						<StarRating rating={rating} setRating={setRating} />
+						<textarea
+							className="w-full mt-4 p-2 border rounded"
+							rows="4"
+							value={review}
+							onChange={(e) => setReview(e.target.value)}
+							placeholder="후기 내용을 작성해주세요."
+						/>
+						<button
+							type="submit"
+							onClick={handleSubmit}
+							className="mt-4 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
+						>
+							제출하기
+						</button>
+					</div>
 					<div>
 						{comments.map((review, index) => (
 							<Review

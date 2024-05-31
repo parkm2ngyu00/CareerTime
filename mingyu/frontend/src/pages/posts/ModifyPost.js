@@ -4,15 +4,23 @@ import { useEffect, useState } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import axios from "axios";
 
-const Posting = () => {
+const ModifyPost = () => {
 	const userId = sessionStorage.getItem("userId");
 	const navigate = useNavigate();
 	const [hashtagInput, setHashtagInput] = useState("");
 	const [hashtags, setHashtags] = useState([]);
-
+	const location = useLocation();
+	const [boardId, setBoardId] = useState(null);
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState(``);
 	// const [value, setValue] = useState(``);
+	const data = location.state;
+	useEffect(() => {
+		setTitle(data.title);
+		setHashtags(data.hashtags);
+		setContent(data.content);
+		setBoardId(data.boardId);
+	}, []);
 
 	const handleTitleChange = (e) => {
 		setTitle(e.target.value);
@@ -52,12 +60,9 @@ const Posting = () => {
 			const queryParams = {
 				userId: userId,
 			};
-			const response = await axios.post(
-				"http://localhost:8080/api/boards",
-				postData,
-				{
-					params: queryParams,
-				}
+			const response = await axios.put(
+				`http://localhost:8080/api/boards/${boardId}`,
+				postData
 			);
 			console.log(response.data);
 			navigate(`/boards/${response.data.post_id}`);
@@ -142,11 +147,11 @@ const Posting = () => {
 					onClick={handleSubmit}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 				>
-					상품 등록
+					수정하기
 				</button>
 			</div>
 		</>
 	);
 };
 
-export default Posting;
+export default ModifyPost;
