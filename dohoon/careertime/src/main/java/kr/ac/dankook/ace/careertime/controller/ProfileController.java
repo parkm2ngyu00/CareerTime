@@ -54,24 +54,24 @@ public class ProfileController {
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
     }
 
-    // Update a profile
-    @PutMapping("/{profileId}")
-    public ResponseEntity<Profile> updateProfile(@PathVariable("profileId") Long profileId,
-                                                 @RequestBody ProfileRequest profileRequest) {
+    // Update a profile by userId
+    @PutMapping("/{userId}")
+    public ResponseEntity<Profile> updateProfileByUserId(@PathVariable("userId") Long userId,
+                                                         @RequestBody ProfileRequest profileRequest) {
         Profile profileDetails = new Profile();
         profileDetails.setCompany_name(profileRequest.getCompanyName());
         profileDetails.setPosition(profileRequest.getPosition());
         profileDetails.setIntroduction(profileRequest.getIntroduction());
         profileDetails.setHashtags(String.join(", ", profileRequest.getHashtags()));
 
-        Profile updatedProfile = profileService.updateProfile(profileId, profileDetails, profileRequest.getProfilePicture());
+        Profile updatedProfile = profileService.updateProfileByUserId(userId, profileDetails, profileRequest.getProfilePicture());
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
-    // Delete a profile
-    @DeleteMapping("/{profileId}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable("profileId") Long profileId) {
-        profileService.deleteProfile(profileId);
+    // Delete a profile by userId
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteProfileByUserId(@PathVariable("userId") Long userId) {
+        profileService.deleteProfileByUserId(userId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

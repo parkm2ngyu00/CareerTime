@@ -50,6 +50,22 @@ public class ProfileService {
                 }).orElseThrow(() -> new RuntimeException("Profile not found with id " + id));
     }
 
+    public Profile updateProfileByUserId(Long userId, Profile profileDetails, String profilePicture) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
+        Profile profile = profileRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
+
+        profile.setCompany_name(profileDetails.getCompany_name());
+        profile.setPosition(profileDetails.getPosition());
+        profile.setIntroduction(profileDetails.getIntroduction());
+        profile.setHashtags(profileDetails.getHashtags());
+        if (profilePicture != null && !profilePicture.isEmpty()) {
+            profile.setProfilePicture(profilePicture);
+        }
+        return profileRepository.save(profile);
+    }
+
     public Profile findProfileByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
@@ -59,5 +75,13 @@ public class ProfileService {
 
     public void deleteProfile(Long profileId) {
         profileRepository.deleteById(profileId);
+    }
+
+    public void deleteProfileByUserId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
+        Profile profile = profileRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Profile not found for user ID: " + userId));
+        profileRepository.delete(profile);
     }
 }

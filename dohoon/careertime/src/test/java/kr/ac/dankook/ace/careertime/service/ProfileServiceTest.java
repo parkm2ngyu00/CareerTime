@@ -143,4 +143,53 @@ class ProfileServiceTest {
         Optional<Profile> foundProfile = profileRepository.findById(profileId);
         assertFalse(foundProfile.isPresent());
     }
+
+    @Test
+    void updateProfileByUserId() {
+        // Given
+        Profile profile = new Profile();
+        profile.setUser(testUser);
+        profile.setCompany_name("Test Company");
+        profile.setPosition("Developer");
+        profile.setHashtags("#java, #spring");
+        profile.setIntroduction("Hello, I'm a developer.");
+        profileRepository.save(profile);
+
+        Profile profileDetails = new Profile();
+        profileDetails.setCompany_name("Updated Company");
+        profileDetails.setPosition("Senior Developer");
+        profileDetails.setHashtags("#updated, #java, #spring");
+        profileDetails.setIntroduction("Hello, I'm a senior developer.");
+        String updatedBase64Image = Base64.getEncoder().encodeToString("updated image content".getBytes());
+
+        // When
+        Profile updatedProfile = profileService.updateProfileByUserId(testUser.getUser_id(), profileDetails, updatedBase64Image);
+
+        // Then
+        assertNotNull(updatedProfile);
+        assertEquals("Updated Company", updatedProfile.getCompany_name());
+        assertEquals("Senior Developer", updatedProfile.getPosition());
+        assertEquals("#updated, #java, #spring", updatedProfile.getHashtags());
+        assertEquals("Hello, I'm a senior developer.", updatedProfile.getIntroduction());
+        assertNotNull(updatedProfile.getProfilePicture());
+    }
+
+    @Test
+    void deleteProfileByUserId() {
+        // Given
+        Profile profile = new Profile();
+        profile.setUser(testUser);
+        profile.setCompany_name("Test Company");
+        profile.setPosition("Developer");
+        profile.setHashtags("#java, #spring");
+        profile.setIntroduction("Hello, I'm a developer.");
+        profileRepository.save(profile);
+
+        // When
+        profileService.deleteProfileByUserId(testUser.getUser_id());
+
+        // Then
+        Optional<Profile> foundProfile = profileRepository.findById(profile.getProfile_id());
+        assertFalse(foundProfile.isPresent());
+    }
 }
