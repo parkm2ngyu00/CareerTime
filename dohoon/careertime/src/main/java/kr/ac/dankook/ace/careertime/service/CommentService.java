@@ -23,30 +23,49 @@ public class CommentService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
 
-    public Comment createComment(Long boardId, Comment comment) {
+    // CommentResponse 객체를 반환하도록 변경
+    public CommentResponse createComment(Long boardId, Comment comment) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
         comment.setBoard(board);
         User user = userRepository.findById(comment.getUser().getUser_id())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + comment.getUser().getUser_id()));
         comment.setUser(user);
-        return commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+        return mapToCommentResponse(savedComment); // CommentResponse로 매핑
     }
 
-    public List<Comment> findCommentsByBoardId(Long boardId) {
+    public List<CommentResponse> findCommentsByBoardId(Long boardId) {
         return commentRepository.findAll()
                 .stream()
                 .filter(c -> c.getBoard().getPost_id().equals(boardId))
+                .map(this::mapToCommentResponse)
                 .collect(Collectors.toList());
     }
 
-    public Comment updateComment(Long id, Comment commentDetails) {
+    private CommentResponse mapToCommentResponse(Comment comment) {
+        User user = comment.getUser();
+        return new CommentResponse(
+                comment.getComment_id(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getName(),
+                user.getUser_type(),
+                user.getUser_id(),
+                comment.getComment_rate().intValue(),
+                comment.getComment_text()
+        );
+    }
+
+    // CommentResponse 객체를 반환하도록 변경
+    public CommentResponse updateComment(Long id, Comment commentDetails) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Comment not found with id: " + id));
         comment.setComment_text(commentDetails.getComment_text());
         comment.setComment_date(commentDetails.getComment_date());
         comment.setComment_rate(commentDetails.getComment_rate());
-        return commentRepository.save(comment);
+        Comment updatedComment = commentRepository.save(comment);
+        return mapToCommentResponse(updatedComment); // CommentResponse로 매핑
     }
 
     public void deleteComment(Long id) {
@@ -56,15 +75,9 @@ public class CommentService {
     }
 
     public CommentSummaryResponse getCommentSummaryByBoardId(Long boardId) {
-        List<Comment> comments = findCommentsByBoardId(boardId);
+        List<CommentResponse> comments = findCommentsByBoardId(boardId);
         int reviewCount = comments.size();
-        double averageRating = comments.stream().mapToDouble(Comment::getComment_rate).average().orElse(0.0);
-        List<CommentResponse> reviewList = comments.stream()
-                .map(comment -> {
-                    User user = comment.getUser();
-                    return new CommentResponse(user.getName(), comment.getComment_rate().intValue(), comment.getComment_text());
-                })
-                .collect(Collectors.toList());
-        return new CommentSummaryResponse(reviewCount, averageRating, reviewList);
+        double averageRating = comments.stream().mapToDouble(CommentResponse::getRating).average().orElse(0.0);
+        return new CommentSummaryResponse(reviewCount, averageRating, comments);
     }
 }

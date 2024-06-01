@@ -23,10 +23,11 @@ import java.util.List;
 public class ProfileController {
     private final ProfileService profileService;
 
-    @PostMapping
-    public ResponseEntity<Profile> createProfile(@RequestParam("userId") Long userId,
-                                                 @RequestBody ProfileRequest profileRequest) {
-        Profile createdProfile = profileService.createProfile(
+    @PostMapping("/{userId}")
+    public ResponseEntity<ProfileResponse> createProfile(@PathVariable("userId") Long userId,
+                                                         @RequestBody ProfileRequest profileRequest) {
+        // ProfileResponse 객체를 직접 반환하도록 수정
+        ProfileResponse createdProfile = profileService.createProfile(
                 userId,
                 profileRequest.getCompanyName(),
                 profileRequest.getPosition(),
@@ -38,33 +39,23 @@ public class ProfileController {
     }
 
     // Get profile by userId
-    @GetMapping
-    public ResponseEntity<ProfileResponse> getProfileByUserId(@RequestParam("userId") Long userId) {
-        Profile profile = profileService.findProfileByUserId(userId);
-        User user = profile.getUser();
-
-        ProfileResponse userProfileResponse = new ProfileResponse(
-                user.getName(),
-                profile.getCompany_name(),
-                profile.getProfilePicture(),
-                user.getEmail(),
-                Arrays.asList(profile.getHashtags().split(", "))
-        );
-
+    @GetMapping("/{userId}")
+    public ResponseEntity<ProfileResponse> getProfileByUserId(@PathVariable("userId") Long userId) {
+        ProfileResponse userProfileResponse = profileService.findProfileByUserId(userId);
         return new ResponseEntity<>(userProfileResponse, HttpStatus.OK);
     }
 
     // Update a profile by userId
     @PutMapping("/{userId}")
-    public ResponseEntity<Profile> updateProfileByUserId(@PathVariable("userId") Long userId,
-                                                         @RequestBody ProfileRequest profileRequest) {
+    public ResponseEntity<ProfileResponse> updateProfileByUserId(@PathVariable("userId") Long userId,
+                                                                 @RequestBody ProfileRequest profileRequest) {
         Profile profileDetails = new Profile();
         profileDetails.setCompany_name(profileRequest.getCompanyName());
         profileDetails.setPosition(profileRequest.getPosition());
         profileDetails.setIntroduction(profileRequest.getIntroduction());
         profileDetails.setHashtags(String.join(", ", profileRequest.getHashtags()));
 
-        Profile updatedProfile = profileService.updateProfileByUserId(userId, profileDetails, profileRequest.getProfilePicture());
+        ProfileResponse updatedProfile = profileService.updateProfileByUserId(userId, profileDetails, profileRequest.getProfilePicture());
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
