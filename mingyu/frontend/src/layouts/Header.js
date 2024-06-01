@@ -5,6 +5,7 @@ const Header = ({ isExpert }) => {
 	const [isLogin, setIsLogin] = useState(false);
 	const userId = sessionStorage.getItem("userId");
 	const navigate = useNavigate();
+	const [searchValue, setSearchValue] = useState("");
 
 	const loginCheck = () => {
 		if (userId == null) {
@@ -23,6 +24,19 @@ const Header = ({ isExpert }) => {
 		navigate(`/mypage`);
 	};
 
+	const handleSearchValueChange = (e) => {
+		setSearchValue(e.target.value);
+	};
+
+	const handleSearch = (e) => {
+		e.preventDefault();
+		const state = {
+			target: searchValue,
+		};
+		console.log(state);
+		navigate(`/boards/search`, { state });
+	};
+
 	useEffect(() => {
 		loginCheck();
 	}, []);
@@ -38,8 +52,13 @@ const Header = ({ isExpert }) => {
 						type="text"
 						placeholder="관심분야를 입력하세요"
 						className="rounded-l-md px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-600"
+						value={searchValue}
+						onChange={handleSearchValueChange}
 					/>
-					<button className="bg-white rounded-r-md px-4 py-2 border border-gray-300 hover:bg-gray-200 transition-colors duration-300">
+					<button
+						onClick={handleSearch}
+						className="bg-white rounded-r-md px-4 py-2 border border-gray-300 hover:bg-gray-200 transition-colors duration-300"
+					>
 						검색
 					</button>
 				</div>

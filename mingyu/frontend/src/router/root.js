@@ -8,6 +8,7 @@ import { ChatDetailPage } from "../pages/mypage/MyChat";
 import PostList from "../pages/posts/PostList";
 import SignupPage from "../pages/User/SignupPage";
 import ModifyPost from "../pages/posts/ModifyPost";
+import PostSearchList from "../pages/posts/PostSearchList";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage"));
@@ -52,6 +53,14 @@ const root = createBrowserRouter([
 		element: (
 			<Suspense fallback={Loading}>
 				<PostList />
+			</Suspense>
+		),
+	},
+	{
+		path: "/boards/search",
+		element: (
+			<Suspense fallback={Loading}>
+				<PostSearchList />
 			</Suspense>
 		),
 	},

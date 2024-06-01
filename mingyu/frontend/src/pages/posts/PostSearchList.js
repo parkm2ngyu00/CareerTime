@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Header from "../../layouts/Header";
 
-const PostList = () => {
+const PostSearchList = () => {
 	const [posts, setPosts] = useState([]);
+	const location = useLocation();
+
+	const searchValue = location.state.target;
 
 	useEffect(() => {
 		const fetchPosts = async () => {
 			try {
-				const response = await axios.get("http://localhost:8080/api/boards");
+				const response = await axios.get(
+					`http://localhost:8080/api/boards/search`,
+					{
+						params: {
+							target: searchValue,
+						},
+					}
+				);
 				setPosts(response.data);
+				console.log(response.data);
 			} catch (error) {
 				console.error("Error fetching posts:", error);
 			}
 		};
 
 		fetchPosts();
-	}, []);
+	}, [searchValue]);
 
 	return (
 		<>
@@ -31,10 +42,10 @@ const PostList = () => {
 							className="bg-white rounded-lg shadow-md px-4 block hover:bg-gray-100 transition-colors duration-300"
 						>
 							<h2 className="text-xl font-bold">{post.title}</h2>
-							<p className="text-gray-600">작성자: {post.user.username}</p>
-							<p className="text-gray-600">작성일: {post.post_date}</p>
+							<p className="text-gray-600">작성자: {post.userinfo.username}</p>
+							<p className="text-gray-600">작성일: {post.postdate}</p>
 							<div className="flex flex-wrap my-3">
-								{post.hashtags.split(", ").map((hashtag, index) => (
+								{post.hashtags.map((hashtag, index) => (
 									<span
 										key={index}
 										className="bg-blue-500 text-white rounded-full px-2 py-1 mr-2 mb-2"
@@ -51,4 +62,4 @@ const PostList = () => {
 	);
 };
 
-export default PostList;
+export default PostSearchList;
