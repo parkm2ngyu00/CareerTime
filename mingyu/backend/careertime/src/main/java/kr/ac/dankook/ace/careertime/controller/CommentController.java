@@ -2,6 +2,7 @@ package kr.ac.dankook.ace.careertime.controller;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
 import kr.ac.dankook.ace.careertime.domain.Comment;
+import kr.ac.dankook.ace.careertime.dto.CommentResponse;
 import kr.ac.dankook.ace.careertime.dto.CommentSummaryResponse;
 import kr.ac.dankook.ace.careertime.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -15,27 +16,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class CommentController {
-
     private final CommentService commentService;
 
-    @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
     @PostMapping("/boards/{boardId}/comments")
-    public ResponseEntity<Comment> createComment(@PathVariable("boardId") Long boardId, @RequestBody Comment comment) {
-        Comment createdComment = commentService.createComment(boardId, comment);
+    public ResponseEntity<CommentResponse> createComment(@PathVariable("boardId") Long boardId, @RequestBody Comment comment) {
+        CommentResponse createdComment = commentService.createComment(boardId, comment);
         return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
     }
 
     @GetMapping("/boards/{boardId}/comments")
-    public ResponseEntity<List<Comment>> getCommentsByBoardId(@PathVariable("boardId") Long boardId) {
-        List<Comment> comments = commentService.findCommentsByBoardId(boardId);
+    public ResponseEntity<List<CommentResponse>> getCommentsByBoardId(@PathVariable("boardId") Long boardId) {
+        List<CommentResponse> comments = commentService.findCommentsByBoardId(boardId);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
     @PutMapping("/boards/{boardId}/comments")
-    public ResponseEntity<Comment> updateComment(@PathVariable("boardId") Long id, @RequestBody Comment commentDetails) {
-        Comment updatedComment = commentService.updateComment(id, commentDetails);
+    public ResponseEntity<CommentResponse> updateComment(@PathVariable("boardId") Long id, @RequestBody Comment commentDetails) {
+        CommentResponse updatedComment = commentService.updateComment(id, commentDetails);
         return new ResponseEntity<>(updatedComment, HttpStatus.OK);
     }
 

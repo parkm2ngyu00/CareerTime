@@ -17,15 +17,15 @@ import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service // 서비스 계층임을 선언
+@Service
 @RequiredArgsConstructor
 public class BoardService {
-
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
-    public Board createBoard(Long userId, String title, List<String> hashtags, String content) {
+    // Board 객체 대신 BoardResponse 객체를 반환하도록 변경
+    public BoardResponse createBoard(Long userId, String title, List<String> hashtags, String content) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID: " + userId));
 
@@ -38,7 +38,8 @@ public class BoardService {
         board.setHashtags(hashtagString);
         board.setPost_date(LocalDateTime.now());
 
-        return boardRepository.save(board);
+        Board savedBoard = boardRepository.save(board);
+        return mapToBoardResponse(savedBoard); // BoardResponse로 매핑
     }
 
     public List<BoardResponse> searchBoards(String query) {
@@ -46,8 +47,9 @@ public class BoardService {
         return boards.stream().map(this::mapToBoardResponse).collect(Collectors.toList());
     }
 
-    public List<Board> getAllBoards() {
-        return boardRepository.findAll();
+    public List<BoardResponse> getAllBoards() {
+        List<Board> boards = boardRepository.findAll();
+        return boards.stream().map(this::mapToBoardResponse).collect(Collectors.toList());
     }
 
     public BoardResponse getBoardById(Long boardId) {
@@ -57,7 +59,7 @@ public class BoardService {
         return mapToBoardResponse(board);
     }
 
-    public Board updateBoard(Long boardId, String title, List<String> hashtags, String content) {
+    public BoardResponse updateBoard(Long boardId, String title, List<String> hashtags, String content) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
 
@@ -67,11 +69,14 @@ public class BoardService {
         board.setContent(content);
         board.setHashtags(hashtagString);
 
-        return boardRepository.save(board);
+        Board updatedBoard = boardRepository.save(board);
+        return mapToBoardResponse(updatedBoard); // BoardResponse로 매핑
     }
 
     public void deleteBoard(Long boardId) {
-        boardRepository.deleteById(boardId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+        boardRepository.delete(board);
     }
 
     public Profile getProfileByUser(User user) {
@@ -79,17 +84,20 @@ public class BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("Profile not found for user: " + user.getUsername()));
     }
 
+    // BoardResponse로 매핑하는 메서드 추가
     private BoardResponse mapToBoardResponse(Board board) {
         User user = board.getUser();
         Profile profile = getProfileByUser(user);
 
         UserInfo userInfo = new UserInfo();
+        userInfo.setUser_id(user.getUser_id());
         userInfo.setUsername(user.getUsername());
         userInfo.setUsercompany(profile.getCompany_name());
         userInfo.setUseremail(user.getEmail());
         userInfo.setUserinterest(Arrays.asList(profile.getHashtags().split(", ")));
 
         BoardResponse boardResponse = new BoardResponse();
+        boardResponse.setPost_id(board.getPost_id());
         boardResponse.setTitle(board.getTitle());
         boardResponse.setHashtags(Arrays.asList(board.getHashtags().split(", ")));
         boardResponse.setContent(board.getContent());

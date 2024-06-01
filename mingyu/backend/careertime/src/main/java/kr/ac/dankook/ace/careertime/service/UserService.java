@@ -1,12 +1,14 @@
 package kr.ac.dankook.ace.careertime.service;
 
 import kr.ac.dankook.ace.careertime.domain.User;
+import kr.ac.dankook.ace.careertime.dto.UserResponse;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Service
@@ -32,5 +34,17 @@ public class UserService {
             return user;
         }
         return Optional.empty();
+    }
+
+    public UserResponse mapToUserResponse(User user) {
+        UserResponse userResponse = new UserResponse();
+        userResponse.setUser_id(user.getUser_id());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setName(user.getName());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setUser_type(user.getUser_type());
+        userResponse.setPoints(user.getPoints());
+        userResponse.setJoin_date(user.getJoin_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        return userResponse;
     }
 }

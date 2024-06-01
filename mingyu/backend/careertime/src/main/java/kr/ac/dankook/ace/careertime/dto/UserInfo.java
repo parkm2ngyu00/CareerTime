@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class UserInfo {
+    private Long user_id;
     private String username;
     private String usercompany;
     private String useremail;

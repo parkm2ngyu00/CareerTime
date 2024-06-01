@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity // JPA 엔티티임을 선언
 @Table(name = "posts") // 이 엔티티가 저장될 DB 테이블을 지정
@@ -23,6 +24,7 @@ public class Board {
     private String title;
 
     @Column(name = "content", nullable = false)
+    @Lob
     private String content;
 
     @Column(name = "hashtags")
@@ -32,9 +34,11 @@ public class Board {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime post_date;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
     @PrePersist
     protected void onCreate() {
         post_date = LocalDateTime.now();
     }
-
 }
