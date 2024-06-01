@@ -6,20 +6,23 @@ import { useEffect, useState } from "react";
 import MarkdownEditor from "./MarkdownEditor";
 import MyChat, { ChatListPage } from "./MyChat";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
-function MyPage() {
+function OtherPage() {
 	const [userData, setUserData] = useState(null);
 	const [editMode, setEditMode] = useState(false);
 	const [hashtagInput, setHashtagInput] = useState("");
 	const [isChat, setIsChat] = useState(false);
 	const userId = sessionStorage.getItem("userId");
 	const [profileId, setProfileId] = useState(null);
+	const location = useLocation();
+	const otherId = location.state.userId;
 
 	useEffect(() => {
 		const fetchProfileData = async () => {
 			try {
 				const response = await fetch(
-					`http://localhost:8080/api/profiles/${userId}`
+					`http://localhost:8080/api/profiles/${otherId}`
 				);
 				const data = await response.json();
 				console.log(data);
@@ -163,12 +166,6 @@ function MyPage() {
 												</div>
 											))}
 										</div>
-										<button
-											onClick={handleSave}
-											className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full"
-										>
-											저장
-										</button>
 									</div>
 								) : (
 									<>
@@ -192,27 +189,6 @@ function MyPage() {
 												))}
 											</div>
 										</div>
-										<button
-											onClick={handleEdit}
-											className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
-										>
-											프로필 수정하기
-										</button>
-										{isChat ? (
-											<button
-												onClick={handleChat}
-												className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
-											>
-												상세 프로필 보기
-											</button>
-										) : (
-											<button
-												onClick={handleChat}
-												className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2 w-full"
-											>
-												내 채팅 보기
-											</button>
-										)}
 									</>
 								)}
 							</div>
@@ -222,7 +198,7 @@ function MyPage() {
 						{isChat ? (
 							<ChatListPage></ChatListPage>
 						) : (
-							<MarkdownEditor></MarkdownEditor>
+							<MarkdownEditor isOther={true}></MarkdownEditor>
 						)}
 					</div>
 				</main>
@@ -233,4 +209,4 @@ function MyPage() {
 	);
 }
 
-export default MyPage;
+export default OtherPage;

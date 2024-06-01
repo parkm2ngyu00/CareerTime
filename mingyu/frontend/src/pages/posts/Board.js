@@ -130,7 +130,7 @@ const Board = () => {
 	const handleDelete = async (e) => {
 		e.preventDefault();
 		const response = await axios.delete(
-			`http://localhost:8080/api/boards${boardId}`
+			`http://localhost:8080/api/boards/${boardId}`
 		);
 		navigate("/boards");
 	};
@@ -145,6 +145,14 @@ const Board = () => {
 		};
 		console.log(state);
 		navigate("/post/modify", { state });
+	};
+
+	const handleToProfile = (e) => {
+		e.preventDefault();
+		const state = {
+			userId: boardData.userinfo.user_id,
+		};
+		navigate("/otherpage", { state });
 	};
 
 	return (
@@ -257,7 +265,10 @@ const Board = () => {
 											</div>
 										))}
 									</div>
-									<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full">
+									<button
+										onClick={handleToProfile}
+										className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full"
+									>
 										프로필 보러가기
 									</button>
 									<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full">

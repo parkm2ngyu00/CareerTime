@@ -14,7 +14,8 @@ const reviewInfo = {
 	],
 };
 
-const Review = ({ name, rating, comment, date }) => {
+const Review = ({ name, rating, comment, date, author }) => {
+	const [isMe, setIsMe] = useState(false);
 	const ratingStars = Array.from({ length: 5 }, (_, i) => (
 		<span
 			key={i}
@@ -24,11 +25,32 @@ const Review = ({ name, rating, comment, date }) => {
 		</span>
 	));
 
+	useEffect(() => {
+		const userId = sessionStorage.getItem("userId");
+		if (userId == author) {
+			setIsMe(true);
+		}
+	}, []);
+
+	const handleDelete = (e) => {
+		e.preventDefault();
+	};
+
 	return (
 		<div className="bg-white shadow-md rounded-lg p-4 mb-4 relative">
 			<div className="flex items-center mb-2">
 				<div className="font-bold mr-2">{name}</div>
 				<div className="flex">{ratingStars}</div>
+				{isMe ? (
+					<button
+						onClick={handleDelete}
+						className="text-gray-400 absolute right-3 top-7"
+					>
+						삭제
+					</button>
+				) : (
+					<></>
+				)}
 				<div className="text-gray-400 absolute right-3 top-7">{date}</div>
 			</div>
 			<p className="text-gray-700">{comment}</p>
@@ -100,7 +122,7 @@ const ReviewSection = () => {
 				setAverage(0);
 			} else {
 				const totalRating = data.reduce(
-					(sum, comment) => sum + comment.comment_rate,
+					(sum, comment) => sum + comment.rating,
 					0
 				);
 				const averageRating = totalRating / data.length;
@@ -180,10 +202,11 @@ const ReviewSection = () => {
 						{comments.map((review, index) => (
 							<Review
 								key={index}
-								name={review.user.name}
-								rating={review.comment_rate}
-								comment={review.comment_text}
-								date={review.comment_date}
+								name={review.name}
+								rating={review.rating}
+								comment={review.comment}
+								author={review.user_id}
+								date=""
 							/>
 						))}
 					</div>

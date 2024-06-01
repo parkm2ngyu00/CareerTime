@@ -53,11 +53,11 @@ const Posting = () => {
 				userId: userId,
 			};
 			const response = await axios.post(
-				"http://localhost:8080/api/boards",
-				postData,
-				{
-					params: queryParams,
-				}
+				`http://localhost:8080/api/boards/${userId}`,
+				postData
+				// {
+				// 	params: queryParams,
+				// }
 			);
 			console.log(response.data);
 			navigate(`/boards/${response.data.post_id}`);
