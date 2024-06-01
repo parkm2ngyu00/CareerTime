@@ -23,7 +23,8 @@ public class Board {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "content", nullable = false, length = 10000)
+    @Column(name = "content", nullable = false)
+    @Lob
     private String content;
 
     @Column(name = "hashtags")

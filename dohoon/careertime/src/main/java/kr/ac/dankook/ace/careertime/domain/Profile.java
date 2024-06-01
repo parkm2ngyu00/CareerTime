@@ -30,6 +30,7 @@ public class Profile {
     private String hashtags;    // 흥미분야 해쉬태그
 
     @Column(name = "introduction")    // 마크 업 언어로 소개 문구 작성
+    @Lob
     private String introduction;
 
     @Column(name = "profile_picture")    // Base64 인코딩된 프로필 사진

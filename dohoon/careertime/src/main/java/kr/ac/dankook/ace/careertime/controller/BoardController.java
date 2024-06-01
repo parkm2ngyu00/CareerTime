@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/boards")
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
 
-    @PostMapping("/boards")
+    @PostMapping("/{userId}")
     public ResponseEntity<BoardResponse> createBoard(
-            @RequestParam("userId") Long userId,
+            @PathVariable("userId") Long userId,
             @RequestBody BoardRequest boardRequest) {
 
         BoardResponse createdBoard = boardService.createBoard(
@@ -37,25 +37,25 @@ public class BoardController {
         return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
     }
 
-    @GetMapping("/boards/search")
+    @GetMapping("/search")
     public ResponseEntity<List<BoardResponse>> searchBoards(@RequestParam("target") String target) {
         List<BoardResponse> boards = boardService.searchBoards(target);
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
-    @GetMapping("/boards")
+    @GetMapping
     public ResponseEntity<List<BoardResponse>> getAllBoards() {
         List<BoardResponse> boards = boardService.getAllBoards();
         return new ResponseEntity<>(boards, HttpStatus.OK);
     }
 
-    @GetMapping("/boards/{boardId}")
+    @GetMapping("/{boardId}")
     public ResponseEntity<BoardResponse> getBoardById(@PathVariable("boardId") Long boardId) {
         BoardResponse boardResponse = boardService.getBoardById(boardId);
         return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 
-    @PutMapping("/boards/{boardId}")
+    @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponse> updateBoard(
             @PathVariable("boardId") Long boardId,
             @RequestBody BoardRequest boardRequest) {
@@ -70,7 +70,7 @@ public class BoardController {
         return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
     }
 
-    @DeleteMapping("/boards/{boardId}")
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<Void> deleteBoard(@PathVariable("boardId") Long boardId) {
         boardService.deleteBoard(boardId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

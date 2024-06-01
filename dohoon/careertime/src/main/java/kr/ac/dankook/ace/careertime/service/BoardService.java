@@ -59,7 +59,6 @@ public class BoardService {
         return mapToBoardResponse(board);
     }
 
-    // Board 객체 대신 BoardResponse 객체를 반환하도록 변경
     public BoardResponse updateBoard(Long boardId, String title, List<String> hashtags, String content) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
