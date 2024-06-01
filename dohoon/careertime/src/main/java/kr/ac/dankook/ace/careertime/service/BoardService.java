@@ -71,7 +71,9 @@ public class BoardService {
     }
 
     public void deleteBoard(Long boardId) {
-        boardRepository.deleteById(boardId);
+        Board board = boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board ID: " + boardId));
+        boardRepository.delete(board);
     }
 
     public Profile getProfileByUser(User user) {
@@ -84,12 +86,14 @@ public class BoardService {
         Profile profile = getProfileByUser(user);
 
         UserInfo userInfo = new UserInfo();
+        userInfo.setUser_id(user.getUser_id());
         userInfo.setUsername(user.getUsername());
         userInfo.setUsercompany(profile.getCompany_name());
         userInfo.setUseremail(user.getEmail());
         userInfo.setUserinterest(Arrays.asList(profile.getHashtags().split(", ")));
 
         BoardResponse boardResponse = new BoardResponse();
+        boardResponse.setPost_id(board.getPost_id());
         boardResponse.setTitle(board.getTitle());
         boardResponse.setHashtags(Arrays.asList(board.getHashtags().split(", ")));
         boardResponse.setContent(board.getContent());

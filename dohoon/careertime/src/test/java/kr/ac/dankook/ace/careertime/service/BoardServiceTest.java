@@ -1,11 +1,13 @@
 package kr.ac.dankook.ace.careertime.service;
 
 import kr.ac.dankook.ace.careertime.domain.Board;
+import kr.ac.dankook.ace.careertime.domain.Comment;
 import kr.ac.dankook.ace.careertime.domain.Profile;
 import kr.ac.dankook.ace.careertime.domain.User;
 import kr.ac.dankook.ace.careertime.dto.BoardResponse;
 import kr.ac.dankook.ace.careertime.dto.UserInfo;
 import kr.ac.dankook.ace.careertime.repository.BoardRepository;
+import kr.ac.dankook.ace.careertime.repository.CommentRepository;
 import kr.ac.dankook.ace.careertime.repository.ProfileRepository;
 import kr.ac.dankook.ace.careertime.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,6 +39,9 @@ class BoardServiceTest {
 
     @Autowired
     private ProfileRepository profileRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     private User testUser;
 
@@ -99,18 +106,18 @@ class BoardServiceTest {
         boardService.createBoard(testUser.getUser_id(), title3, hashtags3, content3);
 
         // When
-//        List<BoardResponse> searchResults = boardService.searchBoards("search");
-//
-//        // Then
-//        assertFalse(searchResults.isEmpty());
-//        assertTrue(searchResults.stream().anyMatch(board -> board.getTitle().contains("Search Title One")));
-//        assertTrue(searchResults.stream().anyMatch(board -> board.getTitle().contains("Another Title")));
-//        assertFalse(searchResults.stream().anyMatch(board -> board.getTitle().contains("Different Title")));
-//
-//        // Check that the correct boards were found
-//        searchResults.forEach(board -> {
-//            assertTrue(board.getTitle().contains("search") || board.getContent().contains("search") || board.getHashtags().contains("#search"));
-//        });
+        List<BoardResponse> searchResults = boardService.searchBoards("search");
+
+        // Then
+        assertFalse(searchResults.isEmpty());
+        assertTrue(searchResults.stream().anyMatch(board -> board.getTitle().contains("Search Title One")));
+        assertTrue(searchResults.stream().anyMatch(board -> board.getTitle().contains("Another Title")));
+        assertFalse(searchResults.stream().anyMatch(board -> board.getTitle().contains("Different Title")));
+
+        // Check that the correct boards were found
+        searchResults.forEach(board -> {
+            assertTrue(board.getTitle().contains("search") || board.getContent().contains("search") || board.getHashtags().contains("#search"));
+        });
     }
 
     @Test
@@ -189,16 +196,41 @@ class BoardServiceTest {
     @Test
     void deleteBoard() {
         // Given
-        String title = "Delete Board";
-        List<String> hashtags = Arrays.asList("#delete", "#board");
-        String content = "Delete board content.";
-        Board createdBoard = boardService.createBoard(testUser.getUser_id(), title, hashtags, content);
+        Board board = new Board();
+        board.setUser(testUser);
+        board.setTitle("Test Board");
+        board.setContent("Test Content");
+        board.setHashtags("#test");
+        boardRepository.save(board);
+
+        Comment comment1 = new Comment();
+        comment1.setBoard(board);
+        comment1.setUser(testUser);
+        comment1.setComment_rate(5L);
+        comment1.setComment_text("Great post!");
+        comment1.setComment_date(LocalDateTime.now());
+        commentRepository.save(comment1);
+
+        Comment comment2 = new Comment();
+        comment2.setBoard(board);
+        comment2.setUser(testUser);
+        comment2.setComment_rate(4L);
+        comment2.setComment_text("Nice post!");
+        comment2.setComment_date(LocalDateTime.now());
+        commentRepository.save(comment2);
+
+        Long boardId = board.getPost_id();
 
         // When
-        boardService.deleteBoard(createdBoard.getPost_id());
+        boardService.deleteBoard(boardId);
 
         // Then
-        Optional<Board> foundBoard = boardRepository.findById(createdBoard.getPost_id());
+        Optional<Board> foundBoard = boardRepository.findById(boardId);
+        assertFalse(foundBoard.isPresent());
+
+        List<Comment> comments = commentRepository.findAll().stream()
+                .filter(c -> c.getBoard().getPost_id().equals(boardId))
+                .collect(Collectors.toList());
         assertFalse(foundBoard.isPresent());
     }
 }
