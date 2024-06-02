@@ -98,6 +98,7 @@ const Board = () => {
 	const [boardData, setBoardData] = useState();
 	const [viewCommnet, setViewComment] = useState(false);
 	const [isAdmin, setIsAdmin] = useState(false);
+	const [isLogin, setIsLogin] = useState(false);
 
 	const defaultBtn = useRef(null);
 	const navigate = useNavigate();
@@ -155,9 +156,16 @@ const Board = () => {
 		navigate("/otherpage", { state });
 	};
 
+	const handleLoginChange = (newState) => {
+		setIsLogin(newState);
+	};
+
 	return (
 		<>
-			<Header></Header>
+			<Header
+				childState={isLogin}
+				onChildStateChange={handleLoginChange}
+			></Header>
 			<div className="flex px-20 pb-20">
 				<div className="w-2/3 h-auto mr-10 relative">
 					<h1 className="font-extrabold text-3xl my-7">{boardData.title}</h1>

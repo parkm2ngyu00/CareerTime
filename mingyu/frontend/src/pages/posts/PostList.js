@@ -19,9 +19,18 @@ const PostList = () => {
 		fetchPosts();
 	}, []);
 
+	const [isLogin, setIsLogin] = useState(false);
+
+	const handleLoginChange = (newState) => {
+		setIsLogin(newState);
+	};
+
 	return (
 		<>
-			<Header></Header>
+			<Header
+				childState={isLogin}
+				onChildStateChange={handleLoginChange}
+			></Header>
 			<div className="container mx-auto max-w-6xl">
 				<div className="mt-10 grid gap-4">
 					{posts.map((post) => (

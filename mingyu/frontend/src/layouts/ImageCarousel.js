@@ -18,17 +18,20 @@ const ImageCarousel = () => {
 	}, []);
 
 	return (
-		<div className="relative w-full h-96">
-			{images.map((image, index) => (
-				<img
-					key={index}
-					src={image}
-					alt={`Banner ${index + 1}`}
-					className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ${
-						index === currentImageIndex ? "opacity-100" : "opacity-0"
-					}`}
-				/>
-			))}
+		<div className="w-full">
+			<div
+				className="flex transition-transform duration-1000 ease-in-out"
+				style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+			>
+				{images.map((image, index) => (
+					<img
+						key={index}
+						src={image}
+						alt={`Banner ${index + 1}`}
+						className="w-full h-auto flex-shrink-0 object-cover"
+					/>
+				))}
+			</div>
 		</div>
 	);
 };

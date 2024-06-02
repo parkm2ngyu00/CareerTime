@@ -1,85 +1,73 @@
 import React, { useState } from "react";
-
-const contents = [
-	{
-		id: 1,
-		title: "[EVENT 수퍼비전] 상담&견적 사 수퍼비전 1:1 맞춤형",
-		description: "test description",
-	},
-	{
-		id: 2,
-		title: "test title",
-		description: "test description",
-	},
-	{
-		id: 3,
-		title: "test title",
-		description: "test description",
-	},
-	{
-		id: 4,
-		title: "test title",
-		description: "test description",
-	},
-	{
-		id: 5,
-		title: "test title",
-		description: "test description",
-	},
-	{
-		id: 6,
-		title: "test title",
-		description: "test description",
-	},
-	{
-		id: 7,
-		title: "test title7",
-		description: "test description",
-	},
-	{
-		id: 8,
-		title: "test title8",
-		description: "test description",
-	},
-]; // Your list of contents here
+import { useEffect } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const RecommendContents = () => {
-	const [start, setStart] = useState(0);
+	const [posts, setPosts] = useState([]);
+	const navigate = useNavigate();
+	const userId = sessionStorage.getItem("userId");
 
-	const handleNext = () => {
-		setStart((prevStart) => Math.min(prevStart + 4, contents.length - 4));
-	};
+	useEffect(() => {
+		const fetchPosts = async () => {
+			try {
+				const response = await axios.get(
+					`http://localhost:8080/api/boards/recommend?userId=${userId}`
+				);
+				setPosts(response.data);
+			} catch (error) {
+				console.error("Error fetching posts:", error);
+			}
+		};
 
-	const handlePrev = () => {
-		setStart((prevStart) => Math.max(prevStart - 4, 0));
+		fetchPosts();
+	}, []);
+
+	const handleGoList = (e) => {
+		e.preventDefault();
+		navigate("/boards");
 	};
 
 	return (
 		<section className="bg-gray-100 py-8 px-24">
-			<h2 className="text-2xl font-bold mb-6">
-				<span className="text-purple-500">추천 </span>상담 상품
-			</h2>
-			<div className="container mx-auto relative">
-				<button
-					className="bg-white rounded-full p-2 shadow-md w-10 h-10 absolute -left-12 top-1/3"
-					onClick={handlePrev}
-				>
-					←
-				</button>
-				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-					{contents.slice(start, start + 4).map((content) => (
-						<div className="bg-white rounded-lg shadow-md p-6" key={content.id}>
-							<h3 className="text-lg font-semibold mb-2">{content.title}</h3>
-							<p className="text-gray-600">{content.description}</p>
-						</div>
-					))}
+			<div className="container mx-auto">
+				<div className="container mx-auto max-w-6xl">
+					<div className="flex align-center justify-between">
+						<h2 className="text-2xl font-bold">
+							<span className="text-purple-500">추천 </span>게시글
+						</h2>
+						<button
+							onClick={handleGoList}
+							className="bg-purple-500 text-white font-bold p-2 rounded-lg"
+						>
+							전체보기
+						</button>
+					</div>
+
+					<div className="mt-5 grid gap-4">
+						{posts.slice(0, 5).map((post) => (
+							<Link
+								key={post.post_id}
+								to={`/boards/${post.post_id}`}
+								className="bg-white rounded-lg shadow-md px-4 block hover:bg-gray-100 transition-colors duration-300 py-3"
+							>
+								<h2 className="text-xl font-bold">{post.title}</h2>
+								<div className="flex flex-wrap my-3">
+									{post.hashtags.split(", ").map((hashtag, index) => (
+										<span
+											key={index}
+											className="bg-blue-500 text-white rounded-full px-2 py-1 mr-2 mb-2"
+										>
+											{hashtag}
+										</span>
+									))}
+								</div>
+								<p className="text-gray-600">작성자: {post.user.username}</p>
+								<p className="text-gray-600">작성일: {post.post_date}</p>
+							</Link>
+						))}
+					</div>
 				</div>
-				<button
-					className="bg-white rounded-full p-2 shadow-md w-10 h-10 absolute top-1/3 -right-12"
-					onClick={handleNext}
-				>
-					→
-				</button>
 			</div>
 		</section>
 	);

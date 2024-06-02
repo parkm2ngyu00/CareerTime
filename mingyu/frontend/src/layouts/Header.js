@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Header = ({ isExpert }) => {
+const Header = ({ childState, onChildStateChange }) => {
 	const [isLogin, setIsLogin] = useState(false);
 	const userId = sessionStorage.getItem("userId");
 	const navigate = useNavigate();
 	const [searchValue, setSearchValue] = useState("");
 
+	const toggleState = (state) => {
+		onChildStateChange(state);
+	};
+
 	const loginCheck = () => {
 		if (userId == null) {
 		} else {
 			setIsLogin(true);
+			toggleState(true);
 		}
 	};
 
 	const handleLogOut = () => {
 		sessionStorage.clear();
 		setIsLogin(false);
+		toggleState(false);
 		navigate("/");
 	};
 
@@ -44,7 +50,7 @@ const Header = ({ isExpert }) => {
 	return (
 		<header className="bg-purple-500 py-4 px-4">
 			<nav className="container mx-auto flex items-center justify-between">
-				<a href="/" className="text-black font-bold text-xl">
+				<a href="/" className="text-white font-bold text-xl">
 					<span className="text-blue-400">CT</span>CareerTime
 				</a>
 				<div>

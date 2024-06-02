@@ -66,9 +66,18 @@ const Posting = () => {
 		}
 	};
 
+	const [isLogin, setIsLogin] = useState(false);
+
+	const handleLoginChange = (newState) => {
+		setIsLogin(newState);
+	};
+
 	return (
 		<>
-			<Header></Header>
+			<Header
+				childState={isLogin}
+				onChildStateChange={handleLoginChange}
+			></Header>
 			<div className="w-3/5 mx-auto py-8">
 				<div className="mb-6">
 					<label htmlFor="title" className="block text-gray-700 font-bold mb-2">

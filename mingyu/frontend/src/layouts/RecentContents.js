@@ -35,7 +35,7 @@ const RecentContents = () => {
 						</h2>
 						<button
 							onClick={handleGoList}
-							className="bg-purple-500 text-white p-2 rounded-lg"
+							className="bg-purple-500 text-white font-bold p-2 rounded-lg"
 						>
 							전체보기
 						</button>
