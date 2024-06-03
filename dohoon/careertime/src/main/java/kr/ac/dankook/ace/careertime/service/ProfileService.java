@@ -100,6 +100,7 @@ public class ProfileService {
                 profile.getCompany_name(),
                 profile.getProfilePicture(),
                 user.getEmail(),
+                profile.getIntroduction(),
                 Arrays.asList(profile.getHashtags().split(", "))
         );
     }
