@@ -98,10 +98,18 @@ function OtherPage() {
 		}
 		setEditMode(false);
 	};
+	const [isLogin, setIsLogin] = useState(false);
+
+	const handleLoginChange = (newState) => {
+		setIsLogin(newState);
+	};
 
 	return (
 		<>
-			<Header></Header>
+			<Header
+				childState={isLogin}
+				onChildStateChange={handleLoginChange}
+			></Header>
 			{userData ? (
 				<main className="px-36 flex">
 					<div className="flex w-1/4 h-full justify-center">

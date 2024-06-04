@@ -7,6 +7,8 @@ import MarkdownEditor from "./MarkdownEditor";
 import MyChat, { ChatListPage } from "./MyChat";
 import axios from "axios";
 
+const initMarkdown = `**마크다운 형식으로 자유롭게 꾸며보세요**`;
+
 function MyPage() {
 	const [userData, setUserData] = useState(null);
 	const [editMode, setEditMode] = useState(false);
@@ -14,6 +16,12 @@ function MyPage() {
 	const [isChat, setIsChat] = useState(false);
 	const userId = sessionStorage.getItem("userId");
 	const [profileId, setProfileId] = useState(null);
+
+	const [markdownValue, setMarkdownValue] = useState(initMarkdown);
+
+	const handleMarkdownChange = (newValue) => {
+		setMarkdownValue(newValue);
+	};
 
 	useEffect(() => {
 		const fetchProfileData = async () => {
@@ -24,6 +32,7 @@ function MyPage() {
 				const data = await response.json();
 				console.log(data);
 				setUserData(data);
+				setMarkdownValue(data.userIntroduction);
 				setProfileId(data.profileId);
 			} catch (error) {
 				console.error("Error fetching profile data:", error);
@@ -80,7 +89,7 @@ function MyPage() {
 			companyName: userData.userCompany,
 			position: "Student",
 			hashtags: userData.userInterest,
-			introduction: "introduction", // 수정필요 (api 고쳐지면)
+			introduction: markdownValue, // 수정필요 (api 고쳐지면)
 			profilePicture: "updated_base64_encoded_image_string", // 추후 이미지 처리 코드 추가
 		};
 		console.log(putData);
@@ -231,7 +240,10 @@ function MyPage() {
 						{isChat ? (
 							<ChatListPage></ChatListPage>
 						) : (
-							<MarkdownEditor></MarkdownEditor>
+							<MarkdownEditor
+								value={markdownValue}
+								onChange={handleMarkdownChange}
+							></MarkdownEditor>
 						)}
 					</div>
 				</main>

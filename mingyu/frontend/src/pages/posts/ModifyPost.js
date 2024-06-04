@@ -14,6 +14,7 @@ const ModifyPost = () => {
 	const [title, setTitle] = useState("");
 	const [content, setContent] = useState(``);
 	// const [value, setValue] = useState(``);
+	const [isLogin, setIsLogin] = useState(false);
 	const data = location.state;
 	useEffect(() => {
 		setTitle(data.title);
@@ -71,9 +72,16 @@ const ModifyPost = () => {
 		}
 	};
 
+	const handleLoginChange = (newState) => {
+		setIsLogin(newState);
+	};
+
 	return (
 		<>
-			<Header></Header>
+			<Header
+				childState={isLogin}
+				onChildStateChange={handleLoginChange}
+			></Header>
 			<div className="w-3/5 mx-auto py-8">
 				<div className="mb-6">
 					<label htmlFor="title" className="block text-gray-700 font-bold mb-2">

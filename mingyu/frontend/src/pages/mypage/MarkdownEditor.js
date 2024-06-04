@@ -4,14 +4,18 @@ import { useState } from "react";
 
 const initMarkdown = `**마크다운 형식으로 자유롭게 꾸며보세요**`;
 
-function MarkdownEditor({ isOther }) {
+function MarkdownEditor({ isOther, value, onChange }) {
 	const [isEditing, setIsEditing] = useState(false);
-	const [value, setValue] = useState(initMarkdown);
+	// const [value, setValue] = useState(initMarkdown);
 
 	const handleEdit = () => {
 		// api 호출 코드 추가
 		console.log(value);
 		setIsEditing((isEditing) => !isEditing);
+	};
+
+	const handleChange = (newValue) => {
+		onChange(newValue);
 	};
 
 	return (
@@ -25,7 +29,7 @@ function MarkdownEditor({ isOther }) {
 							height={300}
 							preview="edit"
 							value={value}
-							onChange={setValue}
+							onChange={handleChange}
 						/>
 					) : (
 						<></>

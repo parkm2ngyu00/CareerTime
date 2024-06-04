@@ -15,6 +15,7 @@ const RecommendContents = () => {
 					`http://localhost:8080/api/boards/recommend?userId=${userId}`
 				);
 				setPosts(response.data);
+				console.log(response.data);
 			} catch (error) {
 				console.error("Error fetching posts:", error);
 			}

@@ -12,5 +12,6 @@ public class ProfileResponse {
     private String userCompany;
     private String userImg;
     private String userEmail;
+    private String userIntroduction;
     private List<String> userInterest;
 }
