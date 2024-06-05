@@ -6,7 +6,7 @@ const initPostData = {
 	companyName: "회사명을 입력해주세요",
 	position: "Developer",
 	hashtags: ["#해시태그", "#입력"],
-	introduction: "Hello, I'm a developer.",
+	introduction: "**마크다운 형식으로 자유롭게 꾸며보세요.**",
 	profilePicture: "base64_encoded_image_string",
 };
 

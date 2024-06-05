@@ -54,7 +54,7 @@ const RecommendContents = () => {
 							>
 								<h2 className="text-xl font-bold">{post.title}</h2>
 								<div className="flex flex-wrap my-3">
-									{post.hashtags.split(", ").map((hashtag, index) => (
+									{post.hashtags.map((hashtag, index) => (
 										<span
 											key={index}
 											className="bg-blue-500 text-white rounded-full px-2 py-1 mr-2 mb-2"
@@ -63,8 +63,10 @@ const RecommendContents = () => {
 										</span>
 									))}
 								</div>
-								<p className="text-gray-600">작성자: {post.user.username}</p>
-								<p className="text-gray-600">작성일: {post.post_date}</p>
+								<p className="text-gray-600">
+									작성자: {post.userinfo.username}
+								</p>
+								<p className="text-gray-600">작성일: {post.postdate}</p>
 							</Link>
 						))}
 					</div>

@@ -20,7 +20,7 @@ public class RecommendationController {
     }
 
     @GetMapping("/recommend")
-    public ResponseEntity<List<BoardResponse>> getRecommendations(@RequestParam Long userId) {
+    public ResponseEntity<List<BoardResponse>> getRecommendations(@RequestParam("userId") Long userId) {
         List<BoardResponse> recommendations = recommendationService.recommendBoardsForUser(userId);
         if (recommendations.isEmpty()) {
             return ResponseEntity.noContent().build();

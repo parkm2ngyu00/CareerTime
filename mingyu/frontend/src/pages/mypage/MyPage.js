@@ -243,6 +243,7 @@ function MyPage() {
 							<MarkdownEditor
 								value={markdownValue}
 								onChange={handleMarkdownChange}
+								userData={userData}
 							></MarkdownEditor>
 						)}
 					</div>
