@@ -1,5 +1,6 @@
 package kr.ac.dankook.ace.careertime.domain;
 
+import jakarta.persistence.*;
 import kr.ac.dankook.ace.careertime.service.ChatService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,32 +11,20 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "chat_rooms")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class ChatRoom {
-    private String roomId;
-    private String name;
-    private Set<WebSocketSession> sessions = new HashSet<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long room_id;
 
-    @Builder
-    public ChatRoom(String roomId, String name) {
-        this.roomId = roomId;
-        this.name = name;
-    }
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
 
-    public void handlerActions(WebSocketSession session, ChatMessage chatMessage, ChatService chatService) {
-        if (chatMessage.getType().equals(ChatMessage.MessageType.ENTER)) {
-            sessions.add(session);
-            chatMessage.setMessage(chatMessage.getSender() + "님이 입장했습니다.");
-        }
-        sendMessage(chatMessage, chatService);
-
-    }
-
-    private <T> void sendMessage(T message, ChatService chatService) {
-        sessions.parallelStream()
-                .forEach(session -> chatService.sendMessage(session, message));
-    }
-
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private User receiver;
 }

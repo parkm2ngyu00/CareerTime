@@ -2,6 +2,7 @@ package kr.ac.dankook.ace.careertime.controller;
 
 import kr.ac.dankook.ace.careertime.domain.ChatMessage;
 import kr.ac.dankook.ace.careertime.domain.ChatRoom;
+import kr.ac.dankook.ace.careertime.dto.ChatResponse;
 import kr.ac.dankook.ace.careertime.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Set;
 
-@Controller
+@RestController
+@RequestMapping("/api/chats")
 @RequiredArgsConstructor
 public class ChatController {
     private final ChatService chatService;
@@ -28,12 +30,16 @@ public class ChatController {
             chatRoom = chatService.createChatRoom(chatMessage.getSenderId(), chatMessage.getReceiverId());
         }
         ChatMessage savedMessage = chatService.saveMessage(chatRoom.getRoom_id(), chatMessage.getSenderId(), chatMessage.getReceiverId(), chatMessage.getMessage());
-        messagingTemplate.convertAndSendToUser(chatMessage.getSenderId().toString(), "/queue/messages", savedMessage);
         messagingTemplate.convertAndSendToUser(chatMessage.getReceiverId().toString(), "/queue/messages", savedMessage);
     }
 
-    @GetMapping("/api/chat/{chatRoomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable("chatRoomId") Long chatRoomId) {
-        return ResponseEntity.ok(chatService.getMessages(chatRoomId));
+//    @GetMapping("/{chatRoomId}/messages")
+//    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable("chatRoomId") Long chatRoomId) {
+//        return ResponseEntity.ok(chatService.getMessages(chatRoomId));
+//    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<ChatResponse>> getChatResponses(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(chatService.getChatResponses(userId));
     }
 }
