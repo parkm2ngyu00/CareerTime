@@ -28,11 +28,12 @@ public class ChatController {
             chatRoom = chatService.createChatRoom(chatMessage.getSenderId(), chatMessage.getReceiverId());
         }
         ChatMessage savedMessage = chatService.saveMessage(chatRoom.getRoom_id(), chatMessage.getSenderId(), chatMessage.getReceiverId(), chatMessage.getMessage());
+        messagingTemplate.convertAndSendToUser(chatMessage.getSenderId().toString(), "/queue/messages", savedMessage);
         messagingTemplate.convertAndSendToUser(chatMessage.getReceiverId().toString(), "/queue/messages", savedMessage);
     }
 
     @GetMapping("/api/chat/{chatRoomId}/messages")
-    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable Long chatRoomId) {
+    public ResponseEntity<List<ChatMessage>> getMessages(@PathVariable("chatRoomId") Long chatRoomId) {
         return ResponseEntity.ok(chatService.getMessages(chatRoomId));
     }
 }
