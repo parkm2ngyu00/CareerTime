@@ -34,8 +34,8 @@ public class Board {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime post_date;
 
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     @PrePersist
     protected void onCreate() {
