@@ -99,6 +99,7 @@ const Board = () => {
 	const [viewCommnet, setViewComment] = useState(false);
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [isLogin, setIsLogin] = useState(false);
+	const userId = sessionStorage.getItem("userId");
 
 	const defaultBtn = useRef(null);
 	const navigate = useNavigate();
@@ -158,6 +159,18 @@ const Board = () => {
 
 	const handleLoginChange = (newState) => {
 		setIsLogin(newState);
+	};
+
+	const handleCreateChat = async () => {
+		const yourId = boardData.userinfo.user_id;
+
+		const response = await axios.post(
+			`http://localhost:8080/api/chats/${userId}/${yourId}`
+		);
+
+		console.log(response.data);
+
+		navigate(`/chat/${response.data.room_id}`);
 	};
 
 	return (
@@ -279,7 +292,10 @@ const Board = () => {
 									>
 										프로필 보러가기
 									</button>
-									<button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full">
+									<button
+										onClick={handleCreateChat}
+										className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 w-full"
+									>
 										채팅하기
 									</button>
 								</div>

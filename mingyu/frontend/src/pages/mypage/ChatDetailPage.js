@@ -74,6 +74,14 @@ const ChatDetailPage = () => {
 		navigate("/mypage");
 	};
 
+	const handleToProfile = (e) => {
+		e.preventDefault();
+		const state = {
+			userId: chat.receiver_id,
+		};
+		navigate("/otherpage", { state });
+	};
+
 	const handleSendMessage = () => {
 		if (stompClient && message.trim() !== "") {
 			const newMessage = {
@@ -119,12 +127,17 @@ const ChatDetailPage = () => {
 				<button className="w-8 h-8 font-bold mr-5" onClick={handleGoBack}>
 					<img src={LeftArrow} alt="Back" />
 				</button>
-				<img
-					src={ManIcon}
-					alt={chat.receiver_name}
-					className="w-10 h-10 rounded-full mr-4"
-				/>
-				<h1 className="text-xl font-bold">{chat.receiver_name}</h1>
+				<button
+					onClick={handleToProfile}
+					className="flex items-center justify-center"
+				>
+					<img
+						src={ManIcon}
+						alt={chat.receiver_name}
+						className="w-10 h-10 rounded-full mr-4"
+					/>
+					<h1 className="text-xl font-bold">{chat.receiver_name}</h1>
+				</button>
 			</header>
 			<main className="flex-1 overflow-y-auto bg-gray-100 p-4">
 				{chat.messages

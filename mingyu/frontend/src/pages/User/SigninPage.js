@@ -35,6 +35,7 @@ const SigninPage = () => {
 			// 	`http://localhost:8080/api/profiles?userId=${response.data.user_id}`,
 			// 	initPostData
 			// );
+			console.log(response.data);
 			navigate("/");
 		} catch (err) {
 			setError("로그인에 실패하였습니다.");
