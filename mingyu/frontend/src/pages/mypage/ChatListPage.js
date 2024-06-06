@@ -42,7 +42,7 @@ const ChatListPage = () => {
 						onClick={() => handleChatClick(chat.room_id)}
 					>
 						<img
-							src={ManIcon}
+							src={`data:image/jpeg;base64,${chat.receiver_profileImage}`}
 							alt={chat.name}
 							className="w-12 h-12 rounded-full mr-4"
 						/>

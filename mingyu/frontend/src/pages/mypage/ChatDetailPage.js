@@ -31,7 +31,6 @@ const ChatDetailPage = () => {
 					`http://localhost:8080/api/chats/${userId}`
 				);
 				setChats(response.data);
-				console.log(response.data);
 			} catch (error) {
 				console.log("error message: ", error);
 			}
@@ -39,26 +38,32 @@ const ChatDetailPage = () => {
 
 		fetchChats();
 
-		// WebSocket 연결 설정
 		const socket = new SockJS("http://localhost:8080/ws");
-		const stompClient = Stomp.over(socket);
-		stompClient.connect({}, () => {
-			setStompClient(stompClient);
-			stompClient.subscribe(`/user/${userId}/queue/messages`, (message) => {
-				const newMessage = JSON.parse(message.body);
-				setChats((prevChats) => {
-					const updatedChats = prevChats.map((chat) => {
-						if (chat.room_id === parseInt(chatId)) {
-							return {
-								...chat,
-								messages: [...chat.messages, newMessage],
-							};
-						}
-						return chat;
-					});
-					return updatedChats;
-				});
-			});
+		const stompClientInstance = Stomp.over(socket);
+		stompClientInstance.connect({}, () => {
+			setStompClient(stompClientInstance);
+			const subscription = stompClientInstance.subscribe(
+				`/user/${userId}/queue/messages`,
+				(message) => {
+					const newMessage = JSON.parse(message.body);
+					setChats((prevChats) =>
+						prevChats.map((chat) => {
+							if (chat.room_id === parseInt(chatId)) {
+								return {
+									...chat,
+									messages: [...chat.messages, newMessage],
+								};
+							}
+							return chat;
+						})
+					);
+				}
+			);
+
+			return () => {
+				subscription.unsubscribe();
+				stompClientInstance.disconnect();
+			};
 		});
 
 		return () => {
@@ -132,7 +137,7 @@ const ChatDetailPage = () => {
 					className="flex items-center justify-center"
 				>
 					<img
-						src={ManIcon}
+						src={`data:image/jpeg;base64,${chat.receiver_profileImage}`}
 						alt={chat.receiver_name}
 						className="w-10 h-10 rounded-full mr-4"
 					/>

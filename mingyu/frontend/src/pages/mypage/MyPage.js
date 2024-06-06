@@ -1,4 +1,5 @@
-import MainIcon from "../../img/man_icon.png";
+import ManIcon from "../../img/man_icon.png";
+import ManIcon2 from "../../img/man_icon_2.png";
 import ProfileImg from "../../img/profile.jpg";
 import CompanyImg from "../../img/company.png";
 import Header from "../../layouts/Header";
@@ -18,6 +19,8 @@ function MyPage() {
 	const [profileId, setProfileId] = useState(null);
 
 	const [markdownValue, setMarkdownValue] = useState(initMarkdown);
+	const [profilePicture, setProfilePicture] = useState(null);
+	const [profilePicturePreview, setProfilePicturePreview] = useState(null);
 
 	const handleMarkdownChange = (newValue) => {
 		setMarkdownValue(newValue);
@@ -34,6 +37,7 @@ function MyPage() {
 				setUserData(data);
 				setMarkdownValue(data.userIntroduction);
 				setProfileId(data.profileId);
+				setProfilePicturePreview(data.userImg); // 기존 프로필 사진 설정
 			} catch (error) {
 				console.error("Error fetching profile data:", error);
 			}
@@ -84,13 +88,41 @@ function MyPage() {
 
 	const handleSave = async (e) => {
 		e.preventDefault();
-		// 변경 정보 저장 로직 추가 (api 호출 등)
+		let profilePictureBase64;
+
+		if (profilePicture) {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(profilePicture);
+			fileReader.onload = () => {
+				profilePictureBase64 = fileReader.result.split(",")[1];
+				sendData(profilePictureBase64);
+			};
+		} else {
+			sendData(null);
+		}
+	};
+
+	const sendData = async () => {
+		let profilePictureBase64;
+
+		if (profilePicture) {
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(profilePicture);
+			await new Promise((resolve) => {
+				fileReader.onload = () => {
+					// base64 인코딩된 데이터에서 'data:image/jpeg;base64,' 부분을 제거합니다.
+					profilePictureBase64 = fileReader.result.split(",")[1];
+					resolve();
+				};
+			});
+		}
+
 		const putData = {
 			companyName: userData.userCompany,
 			position: "Student",
 			hashtags: userData.userInterest,
-			introduction: markdownValue, // 수정필요 (api 고쳐지면)
-			profilePicture: "updated_base64_encoded_image_string", // 추후 이미지 처리 코드 추가
+			introduction: markdownValue,
+			profilePicture: profilePictureBase64,
 		};
 		console.log(putData);
 		try {
@@ -105,11 +137,40 @@ function MyPage() {
 		setEditMode(false);
 	};
 
+	const handleProfilePictureChange = (event) => {
+		const file = event.target.files[0];
+		const reader = new FileReader();
+
+		reader.onloadend = () => {
+			// base64 인코딩된 데이터에서 'data:image/jpeg;base64,' 부분을 제거합니다.
+			const base64Data = reader.result.split(",")[1];
+			setProfilePicture(file);
+			setProfilePicturePreview(base64Data);
+			console.log(profilePicturePreview);
+		};
+
+		if (file) {
+			reader.readAsDataURL(file);
+		}
+	};
+
 	const [isLogin, setIsLogin] = useState(false);
 
 	const handleLoginChange = (newState) => {
 		setIsLogin(newState);
 	};
+
+	// useEffect(() => {
+	// 	if (profilePicture) {
+	// 		const reader = new FileReader();
+	// 		reader.onloadend = () => {
+	// 			setProfilePicturePreview(reader.result);
+	// 		};
+	// 		reader.readAsDataURL(profilePicture);
+	// 	} else {
+	// 		setProfilePicturePreview(null);
+	// 	}
+	// }, [profilePicture]);
 
 	return (
 		<>
@@ -122,11 +183,36 @@ function MyPage() {
 					<div className="flex w-1/4 h-full justify-center">
 						<div className="p-4">
 							<div className="flex flex-col items-center">
-								<img
-									src={ProfileImg}
-									alt="Profile"
-									className="w-64 h-64 rounded-full"
-								/>
+								{editMode ? (
+									<label htmlFor="profile-picture-upload">
+										<img
+											src={
+												profilePicturePreview
+													? `data:image/jpeg;base64,${profilePicturePreview}`
+													: ManIcon2
+											}
+											alt="Profile"
+											className="w-64 h-64 rounded-full cursor-pointer"
+										/>
+										<input
+											id="profile-picture-upload"
+											type="file"
+											accept="image/*"
+											onChange={handleProfilePictureChange}
+											style={{ display: "none" }}
+										/>
+									</label>
+								) : (
+									<img
+										src={
+											profilePicturePreview
+												? `data:image/jpeg;base64,${profilePicturePreview}`
+												: ManIcon2
+										}
+										alt="Profile"
+										className="w-64 h-64 rounded-full"
+									/>
+								)}
 							</div>
 							<div className="mt-10">
 								{editMode ? (
@@ -203,7 +289,7 @@ function MyPage() {
 												{userData.userInterest.map((item, index) => (
 													<div
 														key={index}
-														className="bg-blue-400 text-white mr-2 p-1 rounded-md mb-2"
+														className="bg-blue-400 text-white mr-2 px-2 py-1 rounded-full mb-2"
 													>
 														{item}
 													</div>

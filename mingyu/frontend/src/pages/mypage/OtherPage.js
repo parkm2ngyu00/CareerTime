@@ -17,6 +17,7 @@ function OtherPage() {
 	const [profileId, setProfileId] = useState(null);
 	const location = useLocation();
 	const otherId = location.state.userId;
+	const [userImg, setUserImg] = useState(null);
 
 	useEffect(() => {
 		const fetchProfileData = async () => {
@@ -27,6 +28,7 @@ function OtherPage() {
 				const data = await response.json();
 				console.log(data);
 				setUserData(data);
+				setUserImg(data.userImg);
 				setProfileId(data.profileId);
 			} catch (error) {
 				console.error("Error fetching profile data:", error);
@@ -115,11 +117,17 @@ function OtherPage() {
 					<div className="flex w-1/4 h-full justify-center">
 						<div className="p-4">
 							<div className="flex flex-col items-center">
-								<img
-									src={ProfileImg}
-									alt="Profile"
-									className="w-64 h-64 rounded-full"
-								/>
+								{userImg ? (
+									<>
+										<img
+											src={`data:image/jpeg;base64,${userImg}`}
+											alt="Profile"
+											className="w-64 h-64 rounded-full"
+										/>
+									</>
+								) : (
+									<>Loading...</>
+								)}
 							</div>
 							<div className="mt-10">
 								{editMode ? (
@@ -206,7 +214,10 @@ function OtherPage() {
 						{isChat ? (
 							<ChatListPage></ChatListPage>
 						) : (
-							<MarkdownEditor isOther={true}></MarkdownEditor>
+							<MarkdownEditor
+								userData={userData}
+								isOther={true}
+							></MarkdownEditor>
 						)}
 					</div>
 				</main>

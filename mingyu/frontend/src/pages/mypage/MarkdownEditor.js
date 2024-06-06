@@ -21,7 +21,7 @@ function MarkdownEditor({ isOther, value, onChange, userData }) {
 			position: "Student",
 			hashtags: userData.userInterest,
 			introduction: value, // 수정필요 (api 고쳐지면)
-			profilePicture: "updated_base64_encoded_image_string", // 추후 이미지 처리 코드 추가
+			profilePicture: userData.userImg, // 추후 이미지 처리 코드 추가
 		};
 		console.log(putData);
 		try {
@@ -39,7 +39,7 @@ function MarkdownEditor({ isOther, value, onChange, userData }) {
 	return (
 		<div className="container">
 			{isOther ? (
-				<MDEditor.Markdown source={value} />
+				<MDEditor.Markdown source={userData.userIntroduction} />
 			) : (
 				<>
 					{isEditing ? (
