@@ -38,4 +38,15 @@ public class ChatController {
     public ResponseEntity<List<ChatResponse>> getChatResponses(@PathVariable("userId") Long userId) {
         return ResponseEntity.ok(chatService.getChatResponses(userId));
     }
+
+    @PostMapping("/{userId}/{yourId}")
+    public ChatRoom createChatRoom(@PathVariable("userId") Long userId, @PathVariable("yourId") Long yourId) {
+
+        ChatRoom chatRoom = chatService.getChatRoom(userId, yourId);
+        if (chatRoom == null) {
+            chatRoom = chatService.createChatRoom(userId, yourId);
+        }
+
+        return chatService.getChatRoom(userId, yourId);
+    }
 }
