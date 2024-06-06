@@ -4,7 +4,7 @@ import CompanyImg from "../../img/company.png";
 import Header from "../../layouts/Header";
 import { useEffect, useState } from "react";
 import MarkdownEditor from "./MarkdownEditor";
-import MyChat, { ChatListPage } from "./MyChat";
+import ChatListPage from "./ChatListPage";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 

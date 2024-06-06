@@ -4,7 +4,7 @@ import CompanyImg from "../../img/company.png";
 import Header from "../../layouts/Header";
 import { useEffect, useState } from "react";
 import MarkdownEditor from "./MarkdownEditor";
-import MyChat, { ChatListPage } from "./MyChat";
+import ChatListPage from "./ChatListPage";
 import axios from "axios";
 
 const initMarkdown = `**마크다운 형식으로 자유롭게 꾸며보세요**`;

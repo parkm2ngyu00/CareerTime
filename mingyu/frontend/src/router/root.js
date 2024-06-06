@@ -4,7 +4,7 @@ import Posting from "../pages/posts/Posting";
 import MyPage from "../pages/mypage/MyPage";
 import Board from "../pages/posts/Board";
 import SigninPage from "../pages/User/SigninPage";
-import { ChatDetailPage } from "../pages/mypage/MyChat";
+import ChatDetailPage from "../pages/mypage/ChatDetailPage";
 import PostList from "../pages/posts/PostList";
 import SignupPage from "../pages/User/SignupPage";
 import ModifyPost from "../pages/posts/ModifyPost";
