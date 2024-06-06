@@ -48,29 +48,29 @@ const Header = ({ childState, onChildStateChange }) => {
 	}, []);
 
 	return (
-		<header className="bg-purple-500 py-4 px-4">
+		<header className="bg-gray-200 py-4 px-4">
 			<nav className="container mx-auto flex items-center justify-between">
-				<a href="/" className="text-white font-bold text-xl">
-					<span className="text-blue-400">CT</span>CareerTime
+				<a href="/" className="text-black font-bold text-xl">
+					CareerTime
 				</a>
 				<div>
 					<input
 						type="text"
 						placeholder="관심분야를 입력하세요"
-						className="rounded-l-md px-4 py-2 border border-black-300 focus:outline-none focus:ring-2 focus:ring-gray-600"
+						className="rounded-l-md px-4 py-2 border border-black-300"
 						value={searchValue}
 						onChange={handleSearchValueChange}
 					/>
 					<button
 						onClick={handleSearch}
-						className="bg-white rounded-r-md px-4 py-2 border border-black-300 hover:bg-gray-200 transition-colors duration-300"
+						className="bg-gray-400 rounded-r-md px-4 py-2 border border-black-300 hover:bg-gray-500 transition-colors duration-300"
 					>
 						검색
 					</button>
 				</div>
 				<div className="flex items-center space-x-4">
 					{isLogin ? (
-						<Link className="text-white font-bold" to="/post">
+						<Link className="text-black font-bold" to="/post">
 							글쓰기
 						</Link>
 					) : (
@@ -78,25 +78,19 @@ const Header = ({ childState, onChildStateChange }) => {
 					)}
 					{isLogin ? (
 						<>
-							<button onClick={handleLogOut} className="text-white font-bold">
+							<button onClick={handleLogOut} className="text-black font-bold">
 								로그아웃
 							</button>
-							<button onClick={toMypage} className="text-white font-bold">
+							<button onClick={toMypage} className="text-black font-bold">
 								마이페이지
 							</button>
 						</>
 					) : (
 						<>
-							<a
-								href="/signin"
-								className="text-white hover:text-gray-300 transition-colors duration-300 font-bold"
-							>
+							<a href="/signin" className="text-black font-bold">
 								로그인
 							</a>
-							<a
-								href="/signup"
-								className="text-white hover:text-gray-300 transition-colors duration-300 font-bold"
-							>
+							<a href="/signup" className="text-black font-bold">
 								회원가입
 							</a>
 						</>

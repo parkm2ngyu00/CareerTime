@@ -198,7 +198,7 @@ function OtherPage() {
 												{userData.userInterest.map((item, index) => (
 													<div
 														key={index}
-														className="bg-blue-400 text-white mr-2 p-1 rounded-md mb-2"
+														className="bg-blue-400 text-white mr-2 px-2 py-1 rounded-full mb-2"
 													>
 														{item}
 													</div>

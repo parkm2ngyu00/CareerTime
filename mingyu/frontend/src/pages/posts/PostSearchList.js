@@ -43,6 +43,7 @@ const PostSearchList = () => {
 				onChildStateChange={handleLoginChange}
 			></Header>
 			<div className="container mx-auto max-w-6xl">
+				<div className="mt-10 text-3xl font-bold">"{searchValue}" 검색결과</div>
 				<div className="mt-10 grid gap-4">
 					{posts.map((post) => (
 						<Link
