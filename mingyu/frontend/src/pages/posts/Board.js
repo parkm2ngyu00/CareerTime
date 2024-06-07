@@ -258,7 +258,7 @@ const Board = () => {
 					<div className="py-4">
 						<div className="flex flex-col items-center py-5 border-2 border-black-300 rounded-md">
 							<img
-								src={ProfileImg}
+								src={`data:image/jpeg;base64,${boardData.userinfo.userimage}`}
 								alt="Profile"
 								className="w-2/3 aspect-square rounded-full"
 							/>
