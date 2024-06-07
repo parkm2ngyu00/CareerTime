@@ -94,6 +94,7 @@ public class BoardService {
         userInfo.setUsername(user.getUsername());
         userInfo.setUsercompany(profile.getCompany_name());
         userInfo.setUseremail(user.getEmail());
+        userInfo.setUserimage(profile.getProfilePicture());
         userInfo.setUserinterest(Arrays.asList(profile.getHashtags().split(", ")));
 
         BoardResponse boardResponse = new BoardResponse();

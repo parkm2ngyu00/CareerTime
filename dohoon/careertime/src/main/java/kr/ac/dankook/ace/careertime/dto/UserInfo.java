@@ -10,5 +10,6 @@ public class UserInfo {
     private String username;
     private String usercompany;
     private String useremail;
+    private String userimage;
     private List<String> userinterest;
 }
