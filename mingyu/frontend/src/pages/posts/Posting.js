@@ -137,7 +137,7 @@ const Posting = () => {
 					</label>
 					<div className="container">
 						<MDEditor
-							height={300}
+							height={500}
 							visibleDragbar={false}
 							preview="edit"
 							value={content}
@@ -151,7 +151,7 @@ const Posting = () => {
 					onClick={handleSubmit}
 					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
 				>
-					상품 등록
+					게시글 등록
 				</button>
 			</div>
 		</>

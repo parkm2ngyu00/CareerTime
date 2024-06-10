@@ -63,7 +63,7 @@ const ReviewStats = ({ reviewCount, averageRating }) => {
 		<div className="bg-blue-100 rounded-lg p-4 mb-8">
 			<div className="flex justify-between items-center">
 				<div>
-					<h3 className="text-lg font-semibold">상품 후기</h3>
+					<h3 className="text-lg font-semibold">상담 후기</h3>
 					<p className="text-gray-600">총 {reviewCount}개의 후기</p>
 				</div>
 				<div className="flex items-center">
