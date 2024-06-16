@@ -50,3 +50,8 @@ Spring Boot 3.2.5
 ![image](https://github.com/parkm2ngyu00/GPS_webservice/assets/88785472/9a11bbb9-3b9b-4ab1-853e-fcf1ddc5a286)
 - 프로필사진, 본인 관심사 해시태그, 학교 및 회사 수정 가능
 - 자기소개란 마크다운 형식으로 사용자가 자유롭게 작성 가능
+![mypagechat](https://github.com/parkm2ngyu00/GPS_webservice/assets/88785472/74dffea4-250b-4c99-b18a-76206f184427)
+- 내 채팅 목록 확인 가능
+
+### 채팅페이지
+![chatting](https://github.com/parkm2ngyu00/GPS_webservice/assets/88785472/4f0b432a-c23f-4b71-87de-71bb6e7ba89a)
