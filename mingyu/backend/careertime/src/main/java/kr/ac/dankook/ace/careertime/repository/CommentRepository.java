@@ -1,9 +1,0 @@
-package kr.ac.dankook.ace.careertime.repository;
-
-import kr.ac.dankook.ace.careertime.domain.Comment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-@Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-}
